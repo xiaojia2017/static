@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数字滚动效果</title>
+    <style>
+        #number {
+            font-size: 2em;
+            color: #333;
+            text-align: center;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div id="number">0</div>
+    <script>
+	// 获取数字显示的元素
+const numberElement = document.getElementById('number');
+
+// 设置目标数字
+const targetNumber = 1000;
+
+// 设置滚动速度（每 10 毫秒增加 10）
+const speed = 10;
+const increment = 10;
+
+// 当前数字
+let currentNumber = 0;
+
+// 开始滚动
+function startCounting() {
+    // 如果当前数字小于目标数字，继续增加
+    if (currentNumber < targetNumber) {
+        currentNumber += increment;
+        // 更新显示的数字
+        numberElement.textContent = currentNumber;
+        // 递归调用，实现循环
+        setTimeout(startCounting, speed);
+    } else {
+        // 达到目标数字，停止滚动
+        numberElement.textContent = targetNumber;
+    }
+}
+
+// 调用函数开始滚动
+startCounting();
+	</script>
+	
+</body>
+</html>
