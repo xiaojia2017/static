@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>元旦和春节倒计时</title>
+    <style>
+        /* 设置全局样式 */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: radial-gradient(circle at center, #ffcc00, #ff6b00); /* 从中心向外渐变背景色 */
+            overflow: hidden; /* 隐藏溢出内容 */
+        }
+
+        /* 添加背景动画 */
+        .background-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        /* 烟花粒子样式 */
+        .firework {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.8); /* 白色半透明背景 */
+            border-radius: 50%; /* 圆形 */
+            animation: explode 1s ease-out forwards, fade 2s ease-in forwards; /* 爆炸和淡出动画 */
+        }
+
+        /* 爆炸动画关键帧 */
+        @keyframes explode {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* 淡出动画关键帧 */
+        @keyframes fade {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* 倒计时容器样式 */
+        .countdown-container {
+            text-align: center;
+            margin: 20px 0;
+            background: rgba(255, 255, 255, 0.8); /* 半透明背景 */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 标题样式 */
+        h1 {
+            color: #333;
+            margin: 0;
+        }
+
+        /* 倒计时数字样式 */
+        .countdown {
+            font-size: 1.5em;
+            color: #ff0000;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景动画容器 -->
+    <div class="background-animation" id="background-animation"></div>
+
+    <!-- 倒计时容器 -->
+    <div class="countdown-container">
+        <h1>距离<span class="next_year"></span>元旦倒计时</h1>
+        <div class="countdown" id="new-year-countdown"></div>
+    </div>
+    <div class="countdown-container">
+        <h1>距离<span class="next_year"></span>春节倒计时</h1>
+        <div class="countdown" id="spring-festival-countdown"></div>
+    </div>
+
+    <script>
+        // 获取下一年的元旦日期
+        function getNextNewYearDate() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const nextYear = currentYear + 1;
+            return new Date(nextYear, 0, 1);
+        }
+
+        // 获取下一年的春节日期
+        function getNextSpringFestivalDate() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const nextYear = currentYear + 1;
+            const springFestivalDates = {
+                2023: new Date(2023, 0, 22),
+                2024: new Date(2024, 1, 10), 
+                2025: new Date(2025, 0, 29), 
+                2026: new Date(2026, 1, 17),
+                2027: new Date(2027, 1, 6),  
+                2028: new Date(2028, 0, 26), 
+                2029: new Date(2029, 1, 13), 
+                2030: new Date(2030, 1, 3),  
+            };
+            return springFestivalDates[nextYear];
+        }
+
+        // 格式化时间
+        function formatTime(ms) {
+            const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+            ms %= 1000 * 60 * 60 * 24;
+            const hours = Math.floor(ms / (1000 * 60 * 60));
+            ms %= 1000 * 60 * 60;
+            const minutes = Math.floor(ms / (1000 * 60));
+            ms %= 1000 * 60;
+            const seconds = Math.floor(ms / 1000);
+            return `${days}天 ${hours}小时 ${minutes}分钟 ${seconds}秒`;
+        }
+
+        // 更新倒计时
+        function updateCountdowns() {
+            const now = new Date();
+            const targetNewYear = getNextNewYearDate();
+            const targetSpringFestival = getNextSpringFestivalDate();
+
+            const newYearDiff = targetNewYear - now;
+            const springFestivalDiff = targetSpringFestival - now;
+
+            const currentYear = now.getFullYear();
+            const nextYearElements = document.getElementsByClassName('next_year');
+            for (let i = 0; i < nextYearElements.length; i++) {
+                nextYearElements[i].innerText = currentYear + 1;
+            }
+
+            document.getElementById('new-year-countdown').innerText = formatTime(newYearDiff);
+            document.getElementById('spring-festival-countdown').innerText = formatTime(springFestivalDiff);
+        }
+
+        // 创建烟花粒子
+        function createFirework() {
+            const firework = document.createElement('div');
+            firework.className = 'firework';
+
+            // 随机生成烟花的位置
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            firework.style.left = `${x}px`;
+            firework.style.top = `${y}px`;
+
+            // 将烟花添加到背景动画容器中
+            document.getElementById('background-animation').appendChild(firework);
+
+            // 动画结束后移除烟花
+            firework.addEventListener('animationend', () => {
+                firework.remove();
+            });
+        }
+
+        // 每隔一段时间创建一个新的烟花
+        setInterval(createFirework, 100);
+
+        // 每秒更新一次倒计时
+        setInterval(updateCountdowns, 1000);
+        updateCountdowns();
+    </script>
+</body>
+</html>
