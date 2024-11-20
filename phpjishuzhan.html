@@ -7,22 +7,26 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
-            --font-size-base: 16px;
-            --sidebar-width: 16rem;
-            --main-margin-left: 20rem;
+            --font-size-base: 1rem;
+            --sidebar-width: 15rem;
+            --main-padding-left: 18rem;
         }
 
         body {
             background-color: #f8f9fa;
             font-family: 'Arial', sans-serif;
-            overflow-x: hidden;
             font-size: var(--font-size-base);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
         }
 
         .header {
             background-color: #007bff;
             color: white;
             padding: 1.25rem 0;
+            flex-shrink: 0;
         }
 
         .header h1 {
@@ -30,8 +34,43 @@
         }
 
         .content {
-            margin-top: 1.25rem;
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background-color: #f8f9fa;
             padding: 1.25rem;
+            overflow-y: auto;
+            border-right: 0.125rem solid #007bff;
+            z-index: 1000;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 0.625rem;
+            color: #007bff;
+            text-decoration: none;
+            border-radius: 0.3125rem;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 1.25rem;
+            padding-left: var(--main-padding-left);
+            overflow-y: auto;
         }
 
         .section-title {
@@ -52,49 +91,20 @@
             border-radius: 0.3125rem;
         }
 
-        .sidebar {
-            position: fixed;
-            top: 3.75rem;
-            left: 0;
-            bottom: 0.625rem;
-            width: var(--sidebar-width);
-            background-color: #f8f9fa;
-            padding: 1.25rem;
-            overflow-y: auto;
-            border: 0.125rem solid #007bff;
-        }
-
-        .sidebar a {
-            display: block;
-            padding: 0.625rem;
-            color: #007bff;
-            text-decoration: none;
-            border-radius: 0.3125rem;
-            transition: background-color 0.3s;
-        }
-
-        .sidebar a:hover {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .main-content {
-            margin-left: var(--main-margin-left);
-        }
-
         @media (max-width: 768px) {
             :root {
                 --sidebar-width: 10rem;
-                --main-margin-left: 12rem;
-                --font-size-base: 14px;
+                --main-padding-left: 12rem;
+                --font-size-base: 0.875rem;
             }
 
             .sidebar {
                 width: var(--sidebar-width);
+                padding: 1rem;
             }
 
             .main-content {
-                margin-left: var(--main-margin-left);
+                padding-left: var(--main-padding-left);
             }
         }
     </style>
@@ -124,137 +134,141 @@
     </div>
 </nav>
 
-<!-- 侧边栏 -->
-<div class="sidebar">
-    <a href="#programming-languages">编程语言</a>
-    <a href="#frameworks">框架</a>
-    <a href="#databases">数据库</a>
-    <a href="#frontend-technologies">前端技术</a>
-    <a href="#data-exchange-formats">数据交换格式</a>
-    <a href="#version-control">版本控制</a>
-    <a href="#server-technologies">服务器技术</a>
-    <a href="#caching-technologies">缓存技术</a>
-    <a href="#message-queues">消息队列</a>
-    <a href="#other-technologies">其他技术</a>
-</div>
+<!-- 内容区域 -->
+<div class="content">
 
-<!-- 主内容区 -->
-<div class="main-content container">
-    <div class="section-title">
-        <h2>技术栈</h2>
+    <!-- 侧边栏 -->
+    <div class="sidebar">
+        <a href="#programming-languages">编程语言</a>
+        <a href="#frameworks">框架</a>
+        <a href="#databases">数据库</a>
+        <a href="#frontend-technologies">前端技术</a>
+        <a href="#data-exchange-formats">数据交换格式</a>
+        <a href="#version-control">版本控制</a>
+        <a href="#server-technologies">服务器技术</a>
+        <a href="#caching-technologies">缓存技术</a>
+        <a href="#message-queues">消息队列</a>
+        <a href="#other-technologies">其他技术</a>
     </div>
 
-    <div id="programming-languages" class="tech-stack">
-        <h3>编程语言</h3>
-        <ul>
-            <li>PHP</li>
-            <li>Python（加分项）</li>
-            <li>Golang（了解）</li>
-        </ul>
-    </div>
+    <!-- 主内容区 -->
+    <div class="main-content">
+        <div class="section-title">
+            <h2>技术栈</h2>
+        </div>
 
-    <div id="frameworks" class="tech-stack">
-        <h3>框架</h3>
-        <ul>
-            <li>Laravel</li>
-            <li>Symfony</li>
-            <li>ThinkPHP (TP框架)</li>
-            <li>Yii2</li>
-            <li>Swoole 或 Workerman</li>
-            <li>EasySwoole</li>
-            <li>FastAdmin</li>
-            <li>Webman</li>
-            <li>Workman</li>
-            <li>Hyperf</li>
-            <li>Swoft</li>
-        </ul>
-    </div>
+        <div id="programming-languages" class="tech-stack">
+            <h3>编程语言</h3>
+            <ul>
+                <li>PHP</li>
+                <li>Python（加分项）</li>
+                <li>Golang（了解）</li>
+            </ul>
+        </div>
 
-    <div id="databases" class="tech-stack">
-        <h3>数据库</h3>
-        <ul>
-            <li>MySQL</li>
-            <li>Redis</li>
-            <li>MongoDB</li>
-            <li>Elasticsearch</li>
-        </ul>
-    </div>
+        <div id="frameworks" class="tech-stack">
+            <h3>框架</h3>
+            <ul>
+                <li>Laravel</li>
+                <li>Symfony</li>
+                <li>ThinkPHP (TP框架)</li>
+                <li>Yii2</li>
+                <li>Swoole 或 Workerman</li>
+                <li>EasySwoole</li>
+                <li>FastAdmin</li>
+                <li>Webman</li>
+                <li>Workman</li>
+                <li>Hyperf</li>
+                <li>Swoft</li>
+            </ul>
+        </div>
 
-    <div id="frontend-technologies" class="tech-stack">
-        <h3>前端技术</h3>
-        <ul>
-            <li>HTML</li>
-            <li>CSS</li>
-            <li>JavaScript</li>
-            <li>jQuery</li>
-            <li>Vue.js</li>
-            <li>Layui</li>
-            <li>Bootstrap</li>
-            <li>uni-app</li>
-        </ul>
-    </div>
+        <div id="databases" class="tech-stack">
+            <h3>数据库</h3>
+            <ul>
+                <li>MySQL</li>
+                <li>Redis</li>
+                <li>MongoDB</li>
+                <li>Elasticsearch</li>
+            </ul>
+        </div>
 
-    <div id="data-exchange-formats" class="tech-stack">
-        <h3>数据交换格式</h3>
-        <ul>
-            <li>RESTful API</li>
-            <li>JSON</li>
-        </ul>
-    </div>
+        <div id="frontend-technologies" class="tech-stack">
+            <h3>前端技术</h3>
+            <ul>
+                <li>HTML</li>
+                <li>CSS</li>
+                <li>JavaScript</li>
+                <li>jQuery</li>
+                <li>Vue.js</li>
+                <li>Layui</li>
+                <li>Bootstrap</li>
+                <li>uni-app</li>
+            </ul>
+        </div>
 
-    <div id="version-control" class="tech-stack">
-        <h3>版本控制</h3>
-        <ul>
-            <li>Git</li>
-            <li>SVN</li>
-        </ul>
-    </div>
+        <div id="data-exchange-formats" class="tech-stack">
+            <h3>数据交换格式</h3>
+            <ul>
+                <li>RESTful API</li>
+                <li>JSON</li>
+            </ul>
+        </div>
 
-    <div id="server-technologies" class="tech-stack">
-        <h3>服务器技术</h3>
-        <ul>
-            <li>Nginx</li>
-            <li>Apache</li>
-        </ul>
-    </div>
+        <div id="version-control" class="tech-stack">
+            <h3>版本控制</h3>
+            <ul>
+                <li>Git</li>
+                <li>SVN</li>
+            </ul>
+        </div>
 
-    <div id="caching-technologies" class="tech-stack">
-        <h3>缓存技术</h3>
-        <ul>
-            <li>Redis</li>
-        </ul>
-    </div>
+        <div id="server-technologies" class="tech-stack">
+            <h3>服务器技术</h3>
+            <ul>
+                <li>Nginx</li>
+                <li>Apache</li>
+            </ul>
+        </div>
 
-    <div id="message-queues" class="tech-stack">
-        <h3>消息队列</h3>
-        <ul>
-            <li>RabbitMQ</li>
-            <li>NSQ</li>
-        </ul>
-    </div>
+        <div id="caching-technologies" class="tech-stack">
+            <h3>缓存技术</h3>
+            <ul>
+                <li>Redis</li>
+            </ul>
+        </div>
 
-    <div id="other-technologies" class="tech-stack">
-        <h3>其他技术</h3>
-        <ul>
-            <li>WooCommerce（用于搭建和维护电商网站）</li>
-            <li>Crmeb B2B, B2C（基于ThinkPHP框架开发的商城系统）</li>
-            <li>MySQL中间件</li>
-            <li>微信公众号应用开发</li>
-            <li>常用支付平台的对接</li>
-            <li>微服务架构</li>
-            <li>Docker容器</li>
-            <li>Kubernetes</li>
-            <li>集群、负载均衡</li>
-            <li>网络通信机制及常用数据传输协议</li>
-            <li>Socket编程</li>
-            <li>HTTP协议和Web服务器基本架构</li>
-            <li>PHP8特性</li>
-            <li>PHP底层实现</li>
-            <li>人人商城</li>
-            <li>微擎</li>
-            <li>ECSHOP商城开源代码</li>
-            <li>主流的CMS（如ThinkPHP、Discuz、WordPress）</li>
-        </ul>
+        <div id="message-queues" class="tech-stack">
+            <h3>消息队列</h3>
+            <ul>
+                <li>RabbitMQ</li>
+                <li>NSQ</li>
+            </ul>
+        </div>
+
+        <div id="other-technologies" class="tech-stack">
+            <h3>其他技术</h3>
+            <ul>
+                <li>WooCommerce（用于搭建和维护电商网站）</li>
+                <li>Crmeb B2B, B2C（基于ThinkPHP框架开发的商城系统）</li>
+                <li>MySQL中间件</li>
+                <li>微信公众号应用开发</li>
+                <li>常用支付平台的对接</li>
+                <li>微服务架构</li>
+                <li>Docker容器</li>
+                <li>Kubernetes</li>
+                <li>集群、负载均衡</li>
+                <li>网络通信机制及常用数据传输协议</li>
+                <li>Socket编程</li>
+                <li>HTTP协议和Web服务器基本架构</li>
+                <li>PHP8特性</li>
+                <li>PHP底层实现</li>
+                <li>人人商城</li>
+                <li>微擎</li>
+                <li>ECSHOP商城开源代码</li>
+                <li>主流的CMS（如ThinkPHP、Discuz、WordPress）</li>
+            </ul>
+        </div>
     </div>
 </div>
 
