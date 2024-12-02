@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>多步订单结算表单 - 示例</title>
+  <!-- 引入 Bootstrap 5.0 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- 自定义 CSS -->
+  <style>
+    /* 自定义样式 */
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Arial', sans-serif;
+    }
+    .step {
+      display: none;
+    }
+    .step.active {
+      display: block;
+    }
+    .form-group .invalid-feedback {
+      display: none;
+    }
+    .form-group .is-invalid ~ .invalid-feedback {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 导航条 -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">公司名称</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">首页</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">商品列表</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">关于我们</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">联系我们</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 多步订单结算表单 -->
+  <div class="container mt-4">
+    <h2 class="text-center mb-4">订单结算</h2>
+    <div class="row">
+      <div class="col-12 col-md-8 offset-md-2">
+        <form id="checkoutForm">
+          <!-- 第一步：收货地址 -->
+          <div class="step active" id="step1">
+            <h3>步骤 1: 收货地址</h3>
+            <div class="form-group">
+              <label for="address">收货地址</label>
+              <input type="text" class="form-control" id="address" placeholder="请输入收货地址" required>
+              <div class="invalid-feedback">请填写有效的收货地址。</div>
+            </div>
+            <div class="form-group">
+              <label for="city">城市</label>
+              <input type="text" class="form-control" id="city" placeholder="请输入城市" required>
+              <div class="invalid-feedback">请填写有效的城市名。</div>
+            </div>
+            <div class="form-group">
+              <label for="zip">邮政编码</label>
+              <input type="text" class="form-control" id="zip" placeholder="请输入邮政编码" required>
+              <div class="invalid-feedback">请填写有效的邮政编码。</div>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="nextStep(1)">下一步</button>
+          </div>
+
+          <!-- 第二步：支付方式 -->
+          <div class="step" id="step2">
+            <h3>步骤 2: 支付方式</h3>
+            <div class="form-group">
+              <label for="paymentMethod">选择支付方式</label>
+              <select class="form-control" id="paymentMethod" required>
+                <option value="">请选择支付方式</option>
+                <option value="creditCard">信用卡</option>
+                <option value="paypal">PayPal</option>
+                <option value="bankTransfer">银行转账</option>
+              </select>
+              <div class="invalid-feedback">请选择一个支付方式。</div>
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="prevStep(2)">上一步</button>
+            <button type="button" class="btn btn-primary" onclick="nextStep(2)">下一步</button>
+          </div>
+
+          <!-- 第三步：确认订单 -->
+          <div class="step" id="step3">
+            <h3>步骤 3: 确认订单</h3>
+            <p>请确认您的订单信息：</p>
+            <div id="orderSummary"></div>
+            <button type="button" class="btn btn-secondary" onclick="prevStep(3)">上一步</button>
+            <button type="submit" class="btn btn-success">提交订单</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部 -->
+  <footer class="bg-light text-center py-3">
+    <p>&copy; 2023 公司名称. All rights reserved.</p>
+  </footer>
+
+  <!-- 引入 Bootstrap 5.0 JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // 表单验证函数
+    function validateStep(step) {
+      const form = document.getElementById('checkoutForm');
+      let isValid = true;
+
+      switch (step) {
+        case 1:
+          if (!form.address.checkValidity()) {
+            form.address.classList.add('is-invalid');
+            isValid = false;
+          } else {
+            form.address.classList.remove('is-invalid');
+          }
+
+          if (!form.city.checkValidity()) {
+            form.city.classList.add('is-invalid');
+            isValid = false;
+          } else {
+            form.city.classList.remove('is-invalid');
+          }
+
+          if (!form.zip.checkValidity()) {
+            form.zip.classList.add('is-invalid');
+            isValid = false;
+          } else {
+            form.zip.classList.remove('is-invalid');
+          }
+          break;
+
+        case 2:
+          if (!form.paymentMethod.checkValidity()) {
+            form.paymentMethod.classList.add('is-invalid');
+            isValid = false;
+          } else {
+            form.paymentMethod.classList.remove('is-invalid');
+          }
+          break;
+      }
+
+      return isValid;
+    }
+
+    // 跳转到下一步
+    function nextStep(currentStep) {
+      const currentStepElement = document.getElementById(`step${currentStep}`);
+      const nextStepElement = document.getElementById(`step${currentStep + 1}`);
+
+      if (validateStep(currentStep)) {
+        currentStepElement.classList.remove('active');
+        nextStepElement.classList.add('active');
+
+        if (currentStep === 2) {
+          updateOrderSummary();
+        }
+      }
+    }
+
+    // 返回上一步
+    function prevStep(currentStep) {
+      const currentStepElement = document.getElementById(`step${currentStep}`);
+      const prevStepElement = document.getElementById(`step${currentStep - 1}`);
+
+      currentStepElement.classList.remove('active');
+      prevStepElement.classList.add('active');
+    }
+
+    // 更新订单摘要
+    function updateOrderSummary() {
+      const orderSummary = document.getElementById('orderSummary');
+      const address = document.getElementById('address').value;
+      const city = document.getElementById('city').value;
+      const zip = document.getElementById('zip').value;
+      const paymentMethod = document.getElementById('paymentMethod').value;
+
+      orderSummary.innerHTML = `
+        <strong>收货地址:</strong> ${address}, ${city}, ${zip}<br>
+        <strong>支付方式:</strong> ${paymentMethod}
+      `;
+    }
+
+    // 表单提交
+    document.getElementById('checkoutForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      if (validateStep(2)) {
+        alert('订单已提交成功！');
+        // 在这里可以添加实际的表单提交逻辑
+      }
+    });
+  </script>
+</body>
+</html>
