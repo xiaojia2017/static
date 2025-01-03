@@ -1,0 +1,32 @@
+cd /var/www/html/easyswoole
+
+# 调整 Temp 目录的权限和所有权
+chown -R www-data:www-data Temp
+chmod -R 755 Temp
+
+# 清理残留的 PID 和套接字文件
+rm -f Temp/*.pid
+rm -f Temp/*.sock
+
+# 设置 Composer 根包版本
+nano composer.json  # 添加或更新 "version" 字段
+composer dump-autoload
+
+# 重新安装 EasySwoole
+rm -rf vendor composer.lock
+composer clear-cache
+composer install
+./vendor/bin/easyswoole install
+
+# 尝试启动服务器
+./vendor/bin/easyswoole server start
+
+# 查看日志以获取更多信息
+tail -f Temp/log/*.log
+
+docker exec -it 1983ce463b1d /bin/bash
+
+====================
+docker-compose down
+docker-compose up -d
+docker-compose up -d --build
