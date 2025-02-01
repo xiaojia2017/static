@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>春节烟花</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100%;
+            background: #000;
+        }
+
+        canvas {
+            display: block;
+            background: black;
+            width: 100vw; /* 设置宽度为视口宽度 */
+            height: 100vh; /* 设置高度为视口高度 */
+        }
+
+        .wish {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 3vw; /* 使用视口宽度单位，使字体大小随屏幕尺寸变化 */
+            font-family: 'Arial', sans-serif;
+        }
+
+        @media (max-width: 600px) {
+            .wish {
+                font-size: 5vw; /* 在小屏幕上增加字体大小 */
+            }
+        }
+    </style>
+</head>
+<body>
+<canvas id="fireworksCanvas"></canvas>
+<div class="wish">祝宁云心想事成</div>
+<script>
+    const canvas = document.getElementById('fireworksCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    resizeCanvas(); // 初始化时设置画布大小
+
+    function random(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
+    class Particle {
+        constructor(x, y, color) {
+            this.x = x;
+            this.y = y;
+            this.color = color;
+            this.angle = random(0, Math.PI * 2);
+            this.speed = random(2, 4);
+            this.life = 50;
+        }
+
+        update() {
+            this.x += Math.cos(this.angle) * this.speed;
+            this.y += Math.sin(this.angle) * this.speed;
+            this.life--;
+        }
+
+        draw() {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        }
+    }
+
+    class Firework {
+        constructor(x, y, targetX, targetY) {
+            this.x = x;
+            this.y = y;
+            this.targetX = targetX;
+            this.targetY = targetY;
+            this.trail = [];
+            this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            this.particles = [];
+            this.exploded = false;
+        }
+
+        update() {
+            if (!this.exploded) {
+                const dx = this.targetX - this.x;
+                const dy = this.targetY - this.y;
+                this.x += dx * 0.1;
+                this.y += dy * 0.1;
+
+                this.trail.push({x: this.x, y: this.y});
+
+                if (this.trail.length > 100) {
+                    this.trail.shift();
+                }
+
+                if (Math.abs(dx) < 1 && Math.abs(dy) < 1) {
+                    this.explode();
+                }
+            } else {
+                for (let i = 0; i < this.particles.length; i++) {
+                    this.particles[i].update();
+                    if (this.particles[i].life <= 0) {
+                        this.particles.splice(i, 1);
+                        i--;
+                    }
+                }
+            }
+        }
+
+        explode() {
+            this.exploded = true;
+            for (let i = 0; i < 100; i++) {
+                this.particles.push(new Particle(this.x, this.y, this.color));
+            }
+        }
+
+        draw() {
+            if (!this.exploded) {
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                for (let i = 0; i < this.trail.length; i++) {
+                    ctx.lineTo(this.trail[i].x, this.trail[i].y);
+                }
+                ctx.strokeStyle = this.color;
+                ctx.stroke();
+            } else {
+                for (let i = 0; i < this.particles.length; i++) {
+                    this.particles[i].draw();
+                }
+            }
+        }
+    }
+
+    let fireworks = [];
+
+    function animate() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        if (random(0, 1) < 0.05) {
+            const x = random(0, canvas.width);
+            const y = canvas.height;
+            const targetX = random(0, canvas.width);
+            const targetY = random(0, canvas.height / 2);
+            fireworks.push(new Firework(x, y, targetX, targetY));
+        }
+
+        for (let i = 0; i < fireworks.length; i++) {
+            fireworks[i].update();
+            fireworks[i].draw();
+            if (fireworks[i].particles.length === 0 && fireworks[i].exploded) {
+                fireworks.splice(i, 1);
+                i--;
+            }
+        }
+
+        requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+    });
+
+    animate();
+</script>
+</body>
+</html>
