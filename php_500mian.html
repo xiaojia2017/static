@@ -1,4 +1,156 @@
-一、PHP 基础相关<hr/>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>响应式HTML5框架</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        /* 容器 */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 头部 */
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            margin-bottom: 10px;
+        }
+
+        /* 导航栏 */
+        nav {
+            background-color: #444;
+            padding: 10px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* 响应式导航栏 */
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            nav ul li {
+                margin: 10px 0;
+            }
+        }
+
+        /* 主要内容区域 */
+        main {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        /* 侧边栏 */
+        aside {
+            flex: 1;
+            background-color: #ddd;
+            padding: 20px;
+            margin-right: 20px;
+        }
+
+        /* 文章区域 */
+        article {
+            flex: 3;
+            background-color: #fff;
+            padding: 20px;
+        }
+
+        /* 响应式布局 */
+        @media (max-width: 768px) {
+            main {
+                flex-direction: column;
+            }
+
+            aside {
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
+        }
+
+        /* 页脚 */
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 20px;
+        }
+
+        footer p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部 -->
+    <header>
+        <h1>我的响应式网站</h1>
+        <p>欢迎访问！</p>
+    </header>
+
+    <!-- 导航栏 -->
+    <nav>
+        <ul>
+            <li><a href="#">首页</a></li>
+            <li><a href="#">关于我们</a></li>
+            <li><a href="#">服务</a></li>
+            <li><a href="#">联系我们</a></li>
+        </ul>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <div class="container">
+        <main>
+            <!-- 侧边栏 -->
+            <aside>
+                <h2>侧边栏</h2>
+                <p>这里是侧边栏内容。</p>
+            </aside>
+
+            <!-- 文章区域 -->
+            <article>
+                一、PHP 基础相关<hr/>
 在 PHP 项目中，如何确保不同环境（开发、测试、生产）下配置文件的有效管理？<hr/>
 阐述 PHP 中可变函数和匿名函数在项目实战中的应用场景及区别。<hr/>
 当需要在 PHP 项目里处理大量的文件上传时，有哪些优化策略和需要注意的点？<hr/>
@@ -515,3 +667,13 @@
 如何在 PHP 项目里进行跨语言开发和集成，例如与 Python、Java 等语言的服务进行交互，实现更复杂的业务功能。<hr/>
 解释在 PHP 项目中，如何对项目进行持续的技术创新和改进，以保持项目在市场中的竞争力。<hr/>
 在 PHP 项目中，当面临多个紧急需求和任务时，如何进行有效的任务优先级排序和资源分配，确保项目的顺利推进。<hr/>
+            </article>
+        </main>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>&copy; 2023 我的公司. 保留所有权利。</p>
+    </footer>
+</body>
+</html>
