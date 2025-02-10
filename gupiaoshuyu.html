@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>股票市场术语大全</title>
+  <style>
+    /* 基础样式 */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+
+    header {
+      background: #007BFF;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 1rem;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    section {
+      margin-bottom: 2rem;
+    }
+
+    h2 {
+      color: #007BFF;
+      font-size: 1.8rem;
+      margin-top: 0;
+    }
+
+    ul {
+      list-style-type: disc;
+      margin-left: 20px;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      h2 {
+        font-size: 1.4rem;
+      }
+
+      main {
+        padding: 0.5rem;
+      }
+    }
+
+    /* 按钮样式 */
+    button {
+      display: block;
+      margin: 1rem auto;
+      padding: 0.8rem 1.5rem;
+      background: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    /* 回到顶部按钮 */
+    #back-to-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>股票市场术语大全</h1>
+  </header>
+
+  <main>
+    <section id="trading-terms">
+      <h2>一、股票交易相关术语</h2>
+      <ul>
+        <li><strong>开盘价、收盘价、最高价、最低价：</strong>用于分析股票的日波动范围。</li>
+        <li><strong>涨跌幅：</strong>衡量股票的波动性，判断市场热度或风险。</li>
+        <li><strong>成交量：</strong>反映市场的活跃程度。</li>
+        <li><strong>涨停板/跌停板：</strong>用于控制市场波动，防止过度投机。</li>
+        <li><strong>换手率：</strong>衡量股票的流动性。</li>
+      </ul>
+    </section>
+
+    <section id="valuation-terms">
+      <h2>二、估值相关术语</h2>
+      <ul>
+        <li><strong>市盈率（PE）：</strong>用于评估股票是否被高估或低估。</li>
+        <li><strong>市净率（PB）：</strong>适用于评估重资产行业的股票。</li>
+        <li><strong>股息率：</strong>适合偏好稳定现金流的投资者。</li>
+      </ul>
+    </section>
+
+    <section id="technical-analysis">
+      <h2>三、技术分析相关术语</h2>
+      <ul>
+        <li><strong>K线图：</strong>用于观察价格走势和形态。</li>
+        <li><strong>均线（MA）：</strong>用于判断趋势方向和支持/阻力位。</li>
+        <li><strong>MACD：</strong>用于捕捉趋势反转点。</li>
+        <li><strong>RSI：</strong>判断股票是否超买或超卖。</li>
+      </ul>
+    </section>
+
+    <section id="financial-terms">
+      <h2>四、公司财务相关术语</h2>
+      <ul>
+        <li><strong>每股收益（EPS）：</strong>用于评估公司盈利能力和成长性。</li>
+        <li><strong>净资产收益率（ROE）：</strong>用于评估公司管理层的经营效率。</li>
+        <li><strong>资产负债率：</strong>用于评估公司偿债能力和财务风险。</li>
+      </ul>
+    </section>
+
+    <section id="market-behavior">
+      <h2>五、市场行为相关术语</h2>
+      <ul>
+        <li><strong>牛市/熊市：</strong>用于描述市场整体状态。</li>
+        <li><strong>护盘/砸盘：</strong>用于分析主力资金的操作意图。</li>
+        <li><strong>割韭菜：</strong>形容市场中的不公平现象。</li>
+      </ul>
+    </section>
+
+    <section id="other-terms">
+      <h2>六、其他重要术语</h2>
+      <ul>
+        <li><strong>融资融券：</strong>用于放大收益或对冲风险。</li>
+        <li><strong>IPO：</strong>用于筹集资金，扩大公司规模。</li>
+        <li><strong>停牌/复牌：</strong>用于避免信息不对称引发的市场混乱。</li>
+      </ul>
+    </section>
+
+    <button onclick="scrollToTop()">回到顶部</button>
+  </main>
+
+  <button id="back-to-top" onclick="scrollToTop()">↑</button>
+
+  <script>
+    // 回到顶部功能
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // 显示/隐藏回到顶部按钮
+    window.onscroll = function () {
+      const backToTopButton = document.getElementById('back-to-top');
+      if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+        backToTopButton.style.display = 'block';
+      } else {
+        backToTopButton.style.display = 'none';
+      }
+    };
+  </script>
+</body>
+</html>
