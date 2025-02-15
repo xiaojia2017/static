@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>情人节快乐</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="valentineCanvas"></canvas>
+    <script>
+        const canvas = document.getElementById('valentineCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // 文字内容
+        const text = "老婆情人节快乐！";
+        const fontSize = 60;
+        ctx.font = `${fontSize}px Arial`;
+        const textWidth = ctx.measureText(text).width;
+
+        // 文字位置
+        let textX = (canvas.width - textWidth) / 2;
+        let textY = canvas.height / 2;
+
+        // 爱心和星星的数组
+        const hearts = [];
+        const stars = [];
+
+        // 绘制爱心
+        function drawHeart(x, y, size, color) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.translate(x, y);
+            ctx.moveTo(0, 0);
+            ctx.bezierCurveTo(-size / 2, -size / 2, -size, size / 3, 0, size);
+            ctx.bezierCurveTo(size, size / 3, size / 2, -size / 2, 0, 0);
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // 绘制星星
+        function drawStar(x, y, radius, color) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.translate(x, y);
+            for (let i = 0; i < 5; i++) {
+                ctx.lineTo(Math.cos((18 + i * 72) * radius, -Math.sin((18 + i * 72) * radius);
+                ctx.lineTo(Math.cos((54 + i * 72) * radius * 0.5, -Math.sin((54 + i * 72) * radius * 0.5));
+            }
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // 创建爱心
+        function createHeart() {
+            const size = Math.random() * 20 + 10;
+            const x = Math.random() * canvas.width;
+            const y = -size;
+            const color = `hsl(${Math.random() * 360}, 70%, 60%)`;
+            hearts.push({ x, y, size, color });
+        }
+
+        // 创建星星
+        function createStar() {
+            const radius = Math.random() * 5 + 2;
+            const x = Math.random() * canvas.width;
+            const y = -radius;
+            const color = `hsl(${Math.random() * 360}, 70%, 80%)`;
+            stars.push({ x, y, radius, color });
+        }
+
+        // 更新爱心和星星的位置
+        function update() {
+            for (let i = hearts.length - 1; i >= 0; i--) {
+                hearts[i].y += 2;
+                if (hearts[i].y > canvas.height) {
+                    hearts.splice(i, 1);
+                }
+            }
+            for (let i = stars.length - 1; i >= 0; i--) {
+                stars[i].y += 1;
+                if (stars[i].y > canvas.height) {
+                    stars.splice(i, 1);
+                }
+            }
+        }
+
+        // 绘制所有元素
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 绘制文字
+            ctx.fillStyle = '#fff';
+            ctx.font = `${fontSize}px Arial`;
+            ctx.fillText(text, textX, textY);
+
+            // 绘制爱心
+            hearts.forEach(heart => {
+                drawHeart(heart.x, heart.y, heart.size, heart.color);
+            });
+
+            // 绘制星星
+            stars.forEach(star => {
+                drawStar(star.x, star.y, star.radius, star.color);
+            });
+        }
+
+        // 动画循环
+        function animate() {
+            update();
+            draw();
+            requestAnimationFrame(animate);
+        }
+
+        // 定时生成爱心和星星
+        setInterval(createHeart, 300);
+        setInterval(createStar, 200);
+
+        // 开始动画
+        animate();
+
+        // 窗口大小调整时重置画布
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            textX = (canvas.width - textWidth) / 2;
+            textY = canvas.height / 2;
+        });
+    </script>
+</body>
+</html>

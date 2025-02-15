@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家庭电费统计</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 2rem;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #3498db;
+            margin-bottom: 1rem;
+        }
+
+        .card p {
+            font-size: 1.2rem;
+            margin: 0.5rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: center;
+        }
+
+        th {
+            background: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>家庭电费统计</h1>
+            <p>数据统计时间：2023年1月 - 2024年12月</p>
+        </div>
+
+        <div class="cards-container">
+            <div class="card">
+                <h2>2023年度统计</h2>
+                <p>总用电量：1787 度</p>
+                <p>总电费：1000.72 元</p>
+            </div>
+
+            <div class="card">
+                <h2>2024年度统计</h2>
+                <p>总用电量：4377 度</p>
+                <p>总电费：2692.92 元</p>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>应收年月</th>
+                    <th>电量（度）</th>
+                    <th>电费（元）</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 2024年数据 -->
+                <tr><td>202412</td><td>366</td><td>204.96</td></tr>
+                <tr><td>202411</td><td>292</td><td>196.82</td></tr>
+                <tr><td>202410</td><td>312</td><td>268.32</td></tr>
+                <tr><td>202409</td><td>374</td><td>287.89</td></tr>
+                <tr><td>202408</td><td>551</td><td>333.81</td></tr>
+                <tr><td>202407</td><td>396</td><td>221.76</td></tr>
+                <tr><td>202406</td><td>366</td><td>204.96</td></tr>
+                <tr><td>202405</td><td>307</td><td>171.92</td></tr>
+                <tr><td>202404</td><td>182</td><td>101.92</td></tr>
+                <tr><td>202403</td><td>350</td><td>206.35</td></tr>
+                <tr><td>202402</td><td>523</td><td>293.73</td></tr>
+                <tr><td>202401</td><td>358</td><td>200.48</td></tr>
+                
+                <!-- 2023年数据 -->
+                <tr><td>202312</td><td>184</td><td>103.04</td></tr>
+                <tr><td>202311</td><td>72</td><td>40.32</td></tr>
+                <tr><td>202310</td><td>222</td><td>124.32</td></tr>
+                <tr><td>202309</td><td>141</td><td>78.96</td></tr>
+                <tr><td>202308</td><td>85</td><td>47.6</td></tr>
+                <tr><td>202307</td><td>138</td><td>77.28</td></tr>
+                <tr><td>202306</td><td>178</td><td>99.68</td></tr>
+                <tr><td>202305</td><td>117</td><td>65.52</td></tr>
+                <tr><td>202304</td><td>135</td><td>75.6</td></tr>
+                <tr><td>202303</td><td>69</td><td>38.64</td></tr>
+                <tr><td>202302</td><td>160</td><td>89.6</td></tr>
+                <tr><td>202301</td><td>286</td><td>160.16</td></tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
