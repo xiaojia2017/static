@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>2025年高考倒计时</title>
+  <title id="pageTitle">2025年高考倒计时</title>
   <style>
     /* 全局样式 */
     body {
@@ -66,6 +66,7 @@
       margin: 0 auto;
       color: #555;
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+	  padding: 1rem;
     }
 
     /* 响应式设计 */
@@ -81,7 +82,7 @@
 
       p {
         font-size: 1.5rem;
-		padding:1rem;
+        padding: 1rem;
       }
     }
   </style>
@@ -89,7 +90,7 @@
 
 <body>
   <!-- 页面标题 -->
-  <h1>高考倒计时</h1>
+  <h1 id="pageH1">高考倒计时</h1>
 
   <!-- 倒计时显示 -->
   <div id="countdown">距离高考还有：--天 --小时 --分钟 --秒</div>
@@ -101,8 +102,17 @@
 
   <!-- JavaScript 实现倒计时逻辑 -->
   <script>
-    // 设置高考日期为 2025 年 6 月 7 日
-    const targetDate = new Date("June 7, 2025 00:00:00").getTime();
+    // 获取当前年份
+    const currentYear = new Date().getFullYear();
+    // 设置页面标题中的年份
+    const pageTitle = document.getElementById('pageTitle');
+    pageTitle.textContent = `${currentYear}年高考倒计时`;
+    // 设置页面h1标题中的年份
+    const pageH1 = document.getElementById('pageH1');
+    pageH1.textContent = `${currentYear}年高考倒计时`;
+
+    // 设置高考日期（使用当前年份）
+    const targetDate = new Date(currentYear, 5, 7, 0, 0, 0).getTime();
 
     // 获取倒计时容器
     const countdown = document.getElementById("countdown");
