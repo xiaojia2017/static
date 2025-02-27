@@ -61,7 +61,7 @@
     p {
       font-size: 18px;
       line-height: 1.6;
-      text-align: center;
+      text-indent: 2em;
       max-width: 800px;
       margin: 0 auto;
       color: #555;
@@ -76,14 +76,15 @@
       }
 
       #countdown {
-        font-size: 1.8em;
-        padding: 15px 30px;
+        font-size: 1.5em;
+        padding: 15px 30px;		
       }
 
       p {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         padding: 1rem;
 		max-width: 80%;
+		line-height: 1.3;
       }
     }
   </style>
@@ -94,12 +95,14 @@
   <h1 id="pageH1">高考倒计时</h1>
 
   <!-- 倒计时显示 -->
-  <div id="countdown">距离高考还有：--天 --小时 --分钟 --秒</div>
+  <div id="countdown">--天 --小时 --分钟 --秒</div>
 
   <!-- 鼓励文字 -->
-  <p>
-    亲爱的高三考生们，你们正处在人生的重要转折点。<br/>每一次挑灯夜战，每一滴汗水，都在为梦想积累能量。<br/>在最后的日子里，不要焦虑，不要退缩，保持坚定的信念，勇往直前。<br/>你们就像即将破茧而出的蝴蝶，高考就是那扇通往广阔天地的门。<br/>加油，你们是最棒的！
-  </p>
+  <p>亲爱的高三考生们，你们正处在人生的重要转折点。</p>
+  <p>每一次挑灯夜战，每一滴汗水，都在为梦想积累能量。</p>
+  <p>在最后的日子里，不要焦虑，不要退缩，保持坚定的信念，勇往直前。</p>
+  <p>你们就像即将破茧而出的蝴蝶，高考就是那扇通往广阔天地的门。</p>
+  <p><b>加油，你们是最棒的！</b></p>
 
   <!-- JavaScript 实现倒计时逻辑 -->
   <script>
@@ -130,7 +133,7 @@
       const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
       // 更新倒计时内容
-      countdown.innerHTML = `距离高考还有：${days}天 ${hours}小时 ${minutes}分钟 ${seconds}秒`;
+      countdown.innerHTML = `${days}天 ${hours}小时 ${minutes}分钟 ${seconds}秒`;
     }, 1000);
   </script>
 </body>
