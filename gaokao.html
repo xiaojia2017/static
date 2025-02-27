@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>高考倒计时</title>
+  <style>
+    /* 全局样式 */
+    body {
+      background: radial-gradient(circle, #e0f2f1, #ffe0b2); /* 淡蓝绿色和淡黄色渐变，更柔和 */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      color: #333;
+    }
+
+    /* 标题样式 */
+    h1 {
+      font-size: 40px;
+      font-weight: bold;
+      text-align: center;
+      letter-spacing: 2px;
+      margin-bottom: 30px;
+      color: #4a4a4a;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+
+    h1::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -10px;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background-color: #ff7f50;
+      border-radius: 2px;
+    }
+
+    /* 倒计时容器样式 */
+    #countdown {
+      font-size: 2.2em;
+      font-weight: bold;
+      color: #4a4a4a;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      margin-bottom: 40px;
+      padding: 20px 40px;
+      border: 2px solid #ff7f50;
+      border-radius: 15px;
+      background-color: rgba(255, 255, 255, 0.8);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 提示文字样式 */
+    p {
+      font-size: 18px;
+      line-height: 1.6;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+      color: #555;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 32px;
+      }
+
+      #countdown {
+        font-size: 1.8em;
+        padding: 15px 30px;
+      }
+
+      p {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 页面标题 -->
+  <h1>高考倒计时</h1>
+
+  <!-- 倒计时显示 -->
+  <div id="countdown"></div>
+
+  <!-- 鼓励文字 -->
+  <p>
+    亲爱的高三考生们，你们正处在人生的重要转折点。每一次挑灯夜战，每一滴汗水，都在为梦想积累能量。在最后的日子里，不要焦虑，不要退缩，保持坚定的信念，勇往直前。你们就像即将破茧而出的蝴蝶，高考就是那扇通往广阔天地的门。加油，你们是最棒的！
+  </p>
+
+  <!-- JavaScript 实现倒计时逻辑 -->
+  <script>
+    // 设置高考日期为 2025 年 6 月 7 日
+    const targetDate = new Date("June 7, 2025 00:00:00").getTime();
+
+    // 获取倒计时容器
+    const countdown = document.getElementById("countdown");
+
+    // 每秒更新一次倒计时
+    setInterval(function () {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+
+      // 计算天、小时、分钟和秒
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      // 更新倒计时内容
+      countdown.innerHTML = `距离高考还有：${days}天 ${hours}小时 ${minutes}分钟 ${seconds}秒`;
+    }, 1000);
+  </script>
+</body>
+
+</html>
