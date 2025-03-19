@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>菜鸟教程</title>
+</head>
+<body>
+<p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+    <!-- 根节点 -->
+    <rect x="350" y="20" width="100" height="50" fill="lightblue" />
+    <text x="400" y="50" text-anchor="middle" dominant-baseline="middle">根节点</text>
+    <!-- 第一层分支 -->
+    <rect x="200" y="120" width="100" height="50" fill="lightgreen" />
+    <text x="250" y="150" text-anchor="middle" dominant-baseline="middle">分支节点</text>
+    <rect x="500" y="120" width="100" height="50" fill="lightgreen" />
+    <text x="550" y="150" text-anchor="middle" dominant-baseline="middle">分支节点</text>
+    <!-- 连接根节点和第一层分支 -->
+    <line x1="400" y1="70" x2="250" y2="120" stroke="black" stroke-width="2" />
+    <line x1="400" y1="70" x2="550" y2="120" stroke="black" stroke-width="2" />
+    <!-- 第二层叶子节点 -->
+    <rect x="50" y="220" width="100" height="50" fill="lightyellow" />
+    <text x="100" y="250" text-anchor="middle" dominant-baseline="middle">叶子节点</text>
+    <rect x="200" y="220" width="100" height="50" fill="lightyellow" />
+    <text x="250" y="250" text-anchor="middle" dominant-baseline="middle">叶子节点</text>
+    <rect x="350" y="220" width="100" height="50" fill="lightyellow" />
+    <text x="400" y="250" text-anchor="middle" dominant-baseline="middle">叶子节点</text>
+    <rect x="500" y="220" width="100" height="50" fill="lightyellow" />
+    <text x="550" y="250" text-anchor="middle" dominant-baseline="middle">叶子节点</text>
+    <rect x="650" y="220" width="100" height="50" fill="lightyellow" />
+    <text x="700" y="250" text-anchor="middle" dominant-baseline="middle">叶子节点</text>
+    <!-- 连接第一层分支和第二层叶子节点 -->
+    <line x1="250" y1="170" x2="100" y2="220" stroke="black" stroke-width="2" />
+    <line x1="250" y1="170" x2="250" y2="220" stroke="black" stroke-width="2" />
+    <line x1="250" y1="170" x2="400" y2="220" stroke="black" stroke-width="2" />
+    <line x1="550" y1="170" x2="550" y2="220" stroke="black" stroke-width="2" />
+    <line x1="550" y1="170" x2="700" y2="220" stroke="black" stroke-width="2" />
+    <!-- 叶子节点之间的连接 -->
+    <line x1="150" y1="270" x2="250" y2="270" stroke="black" stroke-width="2" />
+    <line x1="250" y1="270" x2="400" y2="270" stroke="black" stroke-width="2" />
+    <line x1="400" y1="270" x2="550" y2="270" stroke="black" stroke-width="2" />
+    <line x1="550" y1="270" x2="700" y2="270" stroke="black" stroke-width="2" />
+</svg>
+    </p>
+	
+<p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200">
+    <!-- 标题 -->
+    <text x="800" y="50" text-anchor="middle" font-size="36" font-weight="bold">MySQL索引知识体系</text>
+
+    <!-- 基础概念部分 -->
+    <rect x="100" y="120" width="300" height="200" fill="#e0f7fa" />
+    <text x="250" y="160" text-anchor="middle" font-size="24" font-weight="bold">基础概念</text>
+    <text x="150" y="200" text-anchor="start">定义：是一种数据结构，用于提高数据库查询效率</text>
+    <text x="150" y="230" text-anchor="start">作用：减少磁盘I/O，加速数据查找</text>
+    <text x="150" y="260" text-anchor="start">缺点：占用额外存储空间，影响写入性能</text>
+
+    <!-- 索引类型部分 -->
+    <rect x="500" y="120" width="300" height="200" fill="#f1f8e9" />
+    <text x="650" y="160" text-anchor="middle" font-size="24" font-weight="bold">索引类型</text>
+    <text x="550" y="200" text-anchor="start">1. 主键索引：唯一标识记录，不允许NULL值</text>
+    <text x="550" y="230" text-anchor="start">2. 唯一索引：保证索引列值唯一，可含NULL值</text>
+    <text x="550" y="260" text-anchor="start">3. 普通索引：最基本索引，无唯一性要求</text>
+    <text x="550" y="290" text-anchor="start">4. 全文索引：用于全文搜索，适用于文本字段</text>
+    <text x="550" y="320" text-anchor="start">5. 空间索引：用于地理空间数据</text>
+
+    <!-- 数据结构部分 -->
+    <rect x="900" y="120" width="300" height="200" fill="#ffebee" />
+    <text x="1050" y="160" text-anchor="middle" font-size="24" font-weight="bold">数据结构</text>
+    <text x="950" y="200" text-anchor="start">1. B+树：</text>
+    <text x="980" y="230" text-anchor="start">   - 多路平衡搜索树，非叶子节点存索引，叶子节点存数据或指针</text>
+    <text x="980" y="260" text-anchor="start">   - 叶子节点有顺序指针相连，适合范围查询</text>
+    <text x="950" y="290" text-anchor="start">2. 哈希索引：</text>
+    <text x="980" y="320" text-anchor="start">   - 基于哈希表实现，查找速度快，不适合范围查询</text>
+
+    <!-- 索引创建与删除部分 -->
+    <rect x="1300" y="120" width="200" height="200" fill="#fffde7" />
+    <text x="1400" y="160" text-anchor="middle" font-size="24" font-weight="bold">创建与删除</text>
+    <text x="1320" y="200" text-anchor="start">创建：CREATE INDEX语句</text>
+    <text x="1320" y="230" text-anchor="start">删除：DROP INDEX语句</text>
+
+    <!-- 索引使用原则部分 -->
+    <rect x="100" y="400" width="600" height="250" fill="#e8f5e9" />
+    <text x="400" y="440" text-anchor="middle" font-size="24" font-weight="bold">索引使用原则</text>
+    <text x="150" y="480" text-anchor="start">1. 最左前缀原则：复合索引按顺序使用</text>
+    <text x="150" y="510" text-anchor="start">2. 索引列避免计算和函数操作</text>
+    <text x="150" y="540" text-anchor="start">3. 选择高基数列创建索引</text>
+    <text x="150" y="570" text-anchor="start">4. 避免在小表上创建过多索引</text>
+
+    <!-- 索引优化部分 -->
+    <rect x="800" y="400" width="600" height="250" fill="#fff3e0" />
+    <text x="1100" y="440" text-anchor="middle" font-size="24" font-weight="bold">索引优化</text>
+    <text x="850" y="480" text-anchor="start">1. 覆盖索引：查询列被索引覆盖，无需回表</text>
+    <text x="850" y="510" text-anchor="start">2. 索引下推：在存储引擎层过滤数据</text>
+    <text x="850" y="540" text-anchor="start">3. 分析查询语句：使用EXPLAIN分析执行计划</text>
+    <text x="850" y="570" text-anchor="start">4. 定期重建索引：减少碎片</text>
+
+    <!-- 索引监控部分 -->
+    <rect x="100" y="700" width="300" height="200" fill="#e1f5fe" />
+    <text x="250" y="740" text-anchor="middle" font-size="24" font-weight="bold">索引监控</text>
+    <text x="150" y="780" text-anchor="start">1. 查看索引使用情况：SHOW STATUS</text>
+    <text x="150" y="810" text-anchor="start">2. 监控慢查询日志：定位未使用索引的查询</text>
+    <text x="150" y="840" text-anchor="start">3. 性能分析工具：如pt-query-digest</text>
+
+    <!-- 索引与事务部分 -->
+    <rect x="500" y="700" width="300" height="200" fill="#fbe9e7" />
+    <text x="650" y="740" text-anchor="middle" font-size="24" font-weight="bold">索引与事务</text>
+    <text x="550" y="780" text-anchor="start">1. 索引影响事务并发性能</text>
+    <text x="550" y="810" text-anchor="start">2. 事务隔离级别影响索引使用</text>
+    <text x="550" y="840" text-anchor="start">3. 合理设计索引提高事务效率</text>
+
+    <!-- 索引与存储引擎部分 -->
+    <rect x="900" y="700" width="300" height="200" fill="#f3e5f5" />
+    <text x="1050" y="740" text-anchor="middle" font-size="24" font-weight="bold">索引与存储引擎</text>
+    <text x="950" y="780" text-anchor="start">1. InnoDB：支持聚簇索引和外键</text>
+    <text x="950" y="810" text-anchor="start">2. MyISAM：不支持事务，索引和数据分离</text>
+    <text x="950" y="840" text-anchor="start">3. Memory：使用哈希索引或B+树索引</text>
+
+    <!-- 索引在不同场景应用部分 -->
+    <rect x="1300" y="700" width="200" height="200" fill="#fff8e1" />
+    <text x="1400" y="740" text-anchor="middle" font-size="24" font-weight="bold">不同场景应用</text>
+    <text x="1320" y="780" text-anchor="start">1. 读多写少：多创建索引</text>
+    <text x="1320" y="810" text-anchor="start">2. 写多读少：少创建索引</text>
+    <text x="1320" y="840" text-anchor="start">3. 范围查询：使用B+树索引</text>
+
+    <!-- 连线 -->
+    <line x1="400" y1="320" x2="400" y2="400" stroke="black" stroke-width="2" />
+    <line x1="1050" y1="320" x2="1050" y2="400" stroke="black" stroke-width="2" />
+    <line x1="250" y1="600" x2="250" y2="700" stroke="black" stroke-width="2" />
+    <line x1="650" y1="650" x2="650" y2="700" stroke="black" stroke-width="2" />
+    <line x1="1050" y1="650" x2="1050" y2="700" stroke="black" stroke-width="2" />
+    <line x1="1400" y1="320" x2="1400" y2="700" stroke="black" stroke-width="2" />
+</svg>
+    </p>
+	
+<p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1200">
+    <!-- 标题 -->
+    <text x="900" y="50" text-anchor="middle" font-size="36" font-weight="bold">MySQL完整知识体系</text>
+
+    <!-- 基础概念 -->
+    <rect x="100" y="150" width="300" height="200" fill="#e0f7fa" rx="10" ry="10" />
+    <text x="250" y="190" text-anchor="middle" font-size="24" font-weight="bold">基础概念</text>
+    <text x="120" y="230" text-anchor="start">数据库：存储数据的仓库</text>
+    <text x="120" y="260" text-anchor="start">表：数据的集合，类似电子表格</text>
+    <text x="120" y="290" text-anchor="start">字段：表中的列</text>
+    <text x="120" y="320" text-anchor="start">记录：表中的行</text>
+
+    <!-- 数据类型 -->
+    <rect x="500" y="150" width="300" height="200" fill="#f1f8e9" rx="10" ry="10" />
+    <text x="650" y="190" text-anchor="middle" font-size="24" font-weight="bold">数据类型</text>
+    <text x="520" y="230" text-anchor="start">数值类型：INT、FLOAT等</text>
+    <text x="520" y="260" text-anchor="start">字符串类型：VARCHAR、TEXT等</text>
+    <text x="520" y="290" text-anchor="start">日期时间类型：DATE、TIME等</text>
+
+    <!-- SQL语句 -->
+    <rect x="900" y="150" width="300" height="300" fill="#fff3e0" rx="10" ry="10" />
+    <text x="1050" y="190" text-anchor="middle" font-size="24" font-weight="bold">SQL语句</text>
+    <text x="920" y="230" text-anchor="start">DDL：CREATE、ALTER、DROP</text>
+    <text x="920" y="260" text-anchor="start">DML：INSERT、UPDATE、DELETE</text>
+    <text x="920" y="290" text-anchor="start">DQL：SELECT</text>
+    <text x="920" y="320" text-anchor="start">DCL：GRANT、REVOKE</text>
+
+    <!-- 索引 -->
+    <rect x="1300" y="150" width="300" height="200" fill="#ffebee" rx="10" ry="10" />
+    <text x="1450" y="190" text-anchor="middle" font-size="24" font-weight="bold">索引</text>
+    <text x="1320" y="230" text-anchor="start">主键索引：唯一标识记录</text>
+    <text x="1320" y="260" text-anchor="start">唯一索引：保证列值唯一</text>
+    <text x="1320" y="290" text-anchor="start">普通索引：提高查询速度</text>
+    <text x="1320" y="320" text-anchor="start">全文索引：用于文本搜索</text>
+
+    <!-- 事务 -->
+    <rect x="100" y="450" width="300" height="200" fill="#e8f5e9" rx="10" ry="10" />
+    <text x="250" y="490" text-anchor="middle" font-size="24" font-weight="bold">事务</text>
+    <text x="120" y="530" text-anchor="start">ACID特性：原子性、一致性、隔离性、持久性</text>
+    <text x="120" y="560" text-anchor="start">事务控制语句：START TRANSACTION、COMMIT、ROLLBACK</text>
+
+    <!-- 存储引擎 -->
+    <rect x="500" y="450" width="300" height="200" fill="#fffde7" rx="10" ry="10" />
+    <text x="650" y="490" text-anchor="middle" font-size="24" font-weight="bold">存储引擎</text>
+    <text x="520" y="530" text-anchor="start">InnoDB：支持事务、外键</text>
+    <text x="520" y="560" text-anchor="start">MyISAM：不支持事务，性能高</text>
+    <text x="520" y="590" text-anchor="start">Memory：数据存于内存</text>
+
+    <!-- 备份与恢复 -->
+    <rect x="900" y="450" width="300" height="200" fill="#e1f5fe" rx="10" ry="10" />
+    <text x="1050" y="490" text-anchor="middle" font-size="24" font-weight="bold">备份与恢复</text>
+    <text x="920" y="530" text-anchor="start">物理备份：复制数据文件</text>
+    <text x="920" y="560" text-anchor="start">逻辑备份：导出SQL语句</text>
+    <text x="920" y="590" text-anchor="start">恢复方法：导入备份文件</text>
+
+    <!-- 主从复制 -->
+    <rect x="1300" y="450" width="300" height="200" fill="#fbe9e7" rx="10" ry="10" />
+    <text x="1450" y="490" text-anchor="middle" font-size="24" font-weight="bold">主从复制</text>
+    <text x="1320" y="530" text-anchor="start">原理：主库写操作同步到从库</text>
+    <text x="1320" y="560" text-anchor="start">配置步骤：设置主从服务器</text>
+    <text x="1320" y="590" text-anchor="start">应用场景：读写分离</text>
+
+    <!-- 性能优化 -->
+    <rect x="100" y="750" width="300" height="200" fill="#f3e5f5" rx="10" ry="10" />
+    <text x="250" y="790" text-anchor="middle" font-size="24" font-weight="bold">性能优化</text>
+    <text x="120" y="830" text-anchor="start">索引优化：合理创建索引</text>
+    <text x="120" y="860" text-anchor="start">查询优化：优化SQL语句</text>
+    <text x="120" y="890" text-anchor="start">服务器配置优化</text>
+
+    <!-- 安全管理 -->
+    <rect x="500" y="750" width="300" height="200" fill="#fff8e1" rx="10" ry="10" />
+    <text x="650" y="790" text-anchor="middle" font-size="24" font-weight="bold">安全管理</text>
+    <text x="520" y="830" text-anchor="start">用户管理：创建、修改、删除用户</text>
+    <text x="520" y="860" text-anchor="start">权限管理：授予、撤销权限</text>
+    <text x="520" y="890" text-anchor="start">数据加密：保护敏感数据</text>
+
+    <!-- 监控与维护 -->
+    <rect x="900" y="750" width="300" height="200" fill="#e0f2f1" rx="10" ry="10" />
+    <text x="1050" y="790" text-anchor="middle" font-size="24" font-weight="bold">监控与维护</text>
+    <text x="920" y="830" text-anchor="start">监控指标：CPU、内存、磁盘等</text>
+    <text x="920" y="860" text-anchor="start">日志管理：错误日志、慢查询日志等</text>
+    <text x="920" y="890" text-anchor="start">定期维护任务</text>
+
+    <!-- 与PHP交互 -->
+    <rect x="1300" y="750" width="300" height="200" fill="#f1f8e9" rx="10" ry="10" />
+    <text x="1450" y="790" text-anchor="middle" font-size="24" font-weight="bold">与PHP交互</text>
+    <text x="1320" y="830" text-anchor="start">PDO：PHP数据对象</text>
+    <text x="1320" y="860" text-anchor="start">mysqli：MySQL改进扩展</text>
+    <text x="1320" y="890" text-anchor="start">示例代码：连接、查询数据库</text>
+
+    <!-- 连线 -->
+    <line x1="400" y1="350" x2="500" y2="450" stroke="black" stroke-width="2" />
+    <line x1="800" y1="450" x2="900" y2="450" stroke="black" stroke-width="2" />
+    <line x1="1200" y1="350" x2="1300" y2="450" stroke="black" stroke-width="2" />
+    <line x1="400" y1="650" x2="500" y2="750" stroke="black" stroke-width="2" />
+    <line x1="800" y1="650" x2="900" y2="750" stroke="black" stroke-width="2" />
+    <line x1="1200" y1="650" x2="1300" y2="750" stroke="black" stroke-width="2" />
+</svg>
+    </p>
+	
+<p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1500">
+    <!-- 标题 -->
+    <text x="900" y="50" text-anchor="middle" font-size="36" font-weight="bold">PHP完整知识体系</text>
+
+    <!-- 基础语法 -->
+    <rect x="100" y="150" width="300" height="250" fill="#e0f7fa" rx="10" ry="10" />
+    <text x="250" y="190" text-anchor="middle" font-size="24" font-weight="bold">基础语法</text>
+    <text x="120" y="230" text-anchor="start">变量：$var</text>
+    <text x="120" y="260" text-anchor="start">数据类型：整数、浮点数、字符串等</text>
+    <text x="120" y="290" text-anchor="start">运算符：算术、比较、逻辑运算符</text>
+    <text x="120" y="320" text-anchor="start">控制结构：if - else、for、while</text>
+
+    <!-- 函数 -->
+    <rect x="500" y="150" width="300" height="250" fill="#f1f8e9" rx="10" ry="10" />
+    <text x="650" y="190" text-anchor="middle" font-size="24" font-weight="bold">函数</text>
+    <text x="520" y="230" text-anchor="start">内置函数：strlen、array_push等</text>
+    <text x="520" y="260" text-anchor="start">自定义函数：function myFunction() {}</text>
+    <text x="520" y="290" text-anchor="start">函数参数与返回值</text>
+
+    <!-- 数组 -->
+    <rect x="900" y="150" width="300" height="250" fill="#fff3e0" rx="10" ry="10" />
+    <text x="1050" y="190" text-anchor="middle" font-size="24" font-weight="bold">数组</text>
+    <text x="920" y="230" text-anchor="start">索引数组：$arr = [1, 2, 3]</text>
+    <text x="920" y="260" text-anchor="start">关联数组：$arr = ['name' => 'John', 'age' => 30]</text>
+    <text x="920" y="290" text-anchor="start">多维数组：$arr = [[1, 2], [3, 4]]</text>
+    <text x="920" y="320" text-anchor="start">数组操作函数：sort、array_merge等</text>
+
+    <!-- 面向对象编程 -->
+    <rect x="1300" y="150" width="300" height="250" fill="#ffebee" rx="10" ry="10" />
+    <text x="1450" y="190" text-anchor="middle" font-size="24" font-weight="bold">面向对象编程</text>
+    <text x="1320" y="230" text-anchor="start">类与对象：class MyClass {}</text>
+    <text x="1320" y="260" text-anchor="start">属性与方法：public $property; function myMethod() {}</text>
+    <text x="1320" y="290" text-anchor="start">继承、多态、封装</text>
+    <text x="1320" y="320" text-anchor="start">抽象类与接口</text>
+
+    <!-- 文件操作 -->
+    <rect x="100" y="450" width="300" height="200" fill="#e8f5e9" rx="10" ry="10" />
+    <text x="250" y="490" text-anchor="middle" font-size="24" font-weight="bold">文件操作</text>
+    <text x="120" y="530" text-anchor="start">文件读取：fopen、fread、fclose</text>
+    <text x="120" y="560" text-anchor="start">文件写入：fopen、fwrite、fclose</text>
+    <text x="120" y="590" text-anchor="start">目录操作：mkdir、rmdir、scandir</text>
+
+    <!-- 数据库交互 -->
+    <rect x="500" y="450" width="300" height="200" fill="#fffde7" rx="10" ry="10" />
+    <text x="650" y="490" text-anchor="middle" font-size="24" font-weight="bold">数据库交互</text>
+    <text x="520" y="530" text-anchor="start">连接数据库：mysqli、PDO</text>
+    <text x="520" y="560" text-anchor="start">执行查询：SELECT、INSERT、UPDATE、DELETE</text>
+    <text x="520" y="590" text-anchor="start">处理结果集</text>
+
+    <!-- 表单处理 -->
+    <rect x="900" y="450" width="300" height="200" fill="#e1f5fe" rx="10" ry="10" />
+    <text x="1050" y="490" text-anchor="middle" font-size="24" font-weight="bold">表单处理</text>
+    <text x="920" y="530" text-anchor="start">接收表单数据：$_GET、$_POST</text>
+    <text x="920" y="560" text-anchor="start">数据验证：filter_var、preg_match</text>
+    <text x="920" y="590" text-anchor="start">防止SQL注入、XSS攻击</text>
+
+    <!-- 会话与Cookie -->
+    <rect x="1300" y="450" width="300" height="200" fill="#fbe9e7" rx="10" ry="10" />
+    <text x="1450" y="490" text-anchor="middle" font-size="24" font-weight="bold">会话与Cookie</text>
+    <text x="1320" y="530" text-anchor="start">会话管理：session_start、$_SESSION</text>
+    <text x="1320" y="560" text-anchor="start">Cookie操作：setcookie、$_COOKIE</text>
+
+    <!-- 错误处理与调试 -->
+    <rect x="100" y="700" width="300" height="200" fill="#f3e5f5" rx="10" ry="10" />
+    <text x="250" y="740" text-anchor="middle" font-size="24" font-weight="bold">错误处理与调试</text>
+    <text x="120" y="780" text-anchor="start">错误类型：警告、错误、致命错误</text>
+    <text x="120" y="810" text-anchor="start">错误处理函数：set_error_handler、try - catch</text>
+    <text x="120" y="840" text-anchor="start">调试工具：var_dump、print_r</text>
+
+    <!-- 正则表达式 -->
+    <rect x="500" y="700" width="300" height="200" fill="#fff8e1" rx="10" ry="10" />
+    <text x="650" y="740" text-anchor="middle" font-size="24" font-weight="bold">正则表达式</text>
+    <text x="520" y="780" text-anchor="start">基本语法：/pattern/modifiers</text>
+    <text x="520" y="810" text-anchor="start">匹配函数：preg_match、preg_replace</text>
+
+    <!-- 网络编程 -->
+    <rect x="900" y="700" width="300" height="200" fill="#e0f2f1" rx="10" ry="10" />
+    <text x="1050" y="740" text-anchor="middle" font-size="24" font-weight="bold">网络编程</text>
+    <text x="920" y="780" text-anchor="start">HTTP请求：file_get_contents、cURL</text>
+    <text x="920" y="810" text-anchor="start">Socket编程</text>
+
+    <!-- 框架与CMS -->
+    <rect x="1300" y="700" width="300" height="200" fill="#f1f8e9" rx="10" ry="10" />
+    <text x="1450" y="740" text-anchor="middle" font-size="24" font-weight="bold">框架与CMS</text>
+    <text x="1320" y="780" text-anchor="start">流行框架：Laravel、Symfony、CodeIgniter</text>
+    <text x="1320" y="810" text-anchor="start">内容管理系统：WordPress、Joomla</text>
+
+    <!-- 部署与优化 -->
+    <rect x="100" y="950" width="300" height="200" fill="#e0f7fa" rx="10" ry="10" />
+    <text x="250" y="990" text-anchor="middle" font-size="24" font-weight="bold">部署与优化</text>
+    <text x="120" y="1030" text-anchor="start">服务器环境：Apache、Nginx</text>
+    <text x="120" y="1060" text-anchor="start">性能优化：缓存、代码优化</text>
+
+    <!-- 安全编程 -->
+    <rect x="500" y="950" width="300" height="200" fill="#f1f8e9" rx="10" ry="10" />
+    <text x="650" y="990" text-anchor="middle" font-size="24" font-weight="bold">安全编程</text>
+    <text x="520" y="1030" text-anchor="start">防止CSRF、SQL注入、XSS攻击</text>
+    <text x="520" y="1060" text-anchor="start">密码加密：password_hash、password_verify</text>
+
+    <!-- 测试与自动化 -->
+    <rect x="900" y="950" width="300" height="200" fill="#fff3e0" rx="10" ry="10" />
+    <text x="1050" y="990" text-anchor="middle" font-size="24" font-weight="bold">测试与自动化</text>
+    <text x="920" y="1030" text-anchor="start">单元测试：PHPUnit</text>
+    <text x="920" y="1060" text-anchor="start">自动化部署：Jenkins</text>
+
+    <!-- 最新特性与趋势 -->
+    <rect x="1300" y="950" width="300" height="200" fill="#ffebee" rx="10" ry="10" />
+    <text x="1450" y="990" text-anchor="middle" font-size="24" font-weight="bold">最新特性与趋势</text>
+    <text x="1320" y="1030" text-anchor="start">PHP 8新特性：JIT、联合类型等</text>
+    <text x="1320" y="1060" text-anchor="start">微服务、容器化</text>
+
+    <!-- 连线 -->
+    <line x1="400" y1="400" x2="500" y2="450" stroke="black" stroke-width="2" />
+    <line x1="800" y1="400" x2="900" y2="450" stroke="black" stroke-width="2" />
+    <line x1="1200" y1="400" x2="1300" y2="450" stroke="black" stroke-width="2" />
+    <line x1="400" y1="650" x2="500" y2="700" stroke="black" stroke-width="2" />
+    <line x1="800" y1="650" x2="900" y2="700" stroke="black" stroke-width="2" />
+    <line x1="1200" y1="650" x2="1300" y2="700" stroke="black" stroke-width="2" />
+    <line x1="400" y1="900" x2="500" y2="950" stroke="black" stroke-width="2" />
+    <line x1="800" y1="900" x2="900" y2="950" stroke="black" stroke-width="2" />
+    <line x1="1200" y1="900" x2="1300" y2="950" stroke="black" stroke-width="2" />
+</svg>
+    </p>
+	
+<p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 1500">
+    <!-- 标题 -->
+    <text x="1000" y="50" text-anchor="middle" font-size="36" font-weight="bold">LNMP完整知识体系</text>
+
+    <!-- Linux基础 -->
+    <rect x="100" y="150" width="300" height="250" fill="#e0f7fa" rx="10" ry="10" />
+    <text x="250" y="190" text-anchor="middle" font-size="24" font-weight="bold">Linux基础</text>
+    <text x="120" y="230" text-anchor="start">系统安装：CentOS、Ubuntu等</text>
+    <text x="120" y="260" text-anchor="start">文件系统：ext4、XFS等</text>
+    <text x="120" y="290" text-anchor="start">常用命令：ls、cd、mkdir等</text>
+    <text x="120" y="320" text-anchor="start">用户与权限管理</text>
+
+    <!-- Nginx基础 -->
+    <rect x="500" y="150" width="300" height="250" fill="#f1f8e9" rx="10" ry="10" />
+    <text x="650" y="190" text-anchor="middle" font-size="24" font-weight="bold">Nginx基础</text>
+    <text x="520" y="230" text-anchor="start">安装与配置：编译安装、yum安装</text>
+    <text x="520" y="260" text-anchor="start">虚拟主机配置</text>
+    <text x="520" y="290" text-anchor="start">反向代理与负载均衡</text>
+    <text x="520" y="320" text-anchor="start">性能优化：缓存、压缩等</text>
+
+    <!-- MySQL基础 -->
+    <rect x="900" y="150" width="300" height="250" fill="#fff3e0" rx="10" ry="10" />
+    <text x="1050" y="190" text-anchor="middle" font-size="24" font-weight="bold">MySQL基础</text>
+    <text x="920" y="230" text-anchor="start">安装与配置：源码安装、yum安装</text>
+    <text x="920" y="260" text-anchor="start">数据库设计：表结构、索引等</text>
+    <text x="920" y="290" text-anchor="start">SQL语句：增删改查</text>
+    <text x="920" y="320" text-anchor="start">备份与恢复：物理备份、逻辑备份</text>
+
+    <!-- PHP基础 -->
+    <rect x="1300" y="150" width="300" height="250" fill="#ffebee" rx="10" ry="10" />
+    <text x="1450" y="190" text-anchor="middle" font-size="24" font-weight="bold">PHP基础</text>
+    <text x="1320" y="230" text-anchor="start">安装与配置：编译安装、yum安装</text>
+    <text x="1320" y="260" text-anchor="start">语法基础：变量、数据类型等</text>
+    <text x="1320" y="290" text-anchor="start">函数与类：内置函数、自定义类</text>
+    <text x="1320" y="320" text-anchor="start">框架使用：Laravel、CodeIgniter等</text>
+
+    <!-- 各组件交互 -->
+    <rect x="100" y="500" width="600" height="300" fill="#e8f5e9" rx="10" ry="10" />
+    <text x="400" y="540" text-anchor="middle" font-size="24" font-weight="bold">各组件交互</text>
+    <text x="120" y="580" text-anchor="start">Nginx与PHP：FastCGI协议</text>
+    <text x="120" y="610" text-anchor="start">PHP与MySQL：mysqli、PDO等扩展</text>
+    <text x="120" y="640" text-anchor="start">Nginx处理静态资源，PHP处理动态请求</text>
+    <text x="120" y="670" text-anchor="start">请求流程：用户请求 -> Nginx -> PHP -> MySQL</text>
+
+    <!-- 性能优化 -->
+    <rect x="800" y="500" width="600" height="300" fill="#fffde7" rx="10" ry="10" />
+    <text x="1100" y="540" text-anchor="middle" font-size="24" font-weight="bold">性能优化</text>
+    <text x="820" y="580" text-anchor="start">Linux：内核参数调优、磁盘I/O优化</text>
+    <text x="820" y="610" text-anchor="start">Nginx：缓存配置、连接优化</text>
+    <text x="820" y="640" text-anchor="start">MySQL：索引优化、查询优化</text>
+    <text x="820" y="670" text-anchor="start">PHP：Opcode缓存、代码优化</text>
+
+    <!-- 安全管理 -->
+    <rect x="1500" y="500" width="300" height="300" fill="#e1f5fe" rx="10" ry="10" />
+    <text x="1650" y="540" text-anchor="middle" font-size="24" font-weight="bold">安全管理</text>
+    <text x="1520" y="580" text-anchor="start">Linux：防火墙设置、SELinux</text>
+    <text x="1520" y="610" text-anchor="start">Nginx：访问控制、防止DDoS</text>
+    <text x="1520" y="640" text-anchor="start">MySQL：用户权限管理、数据加密</text>
+    <text x="1520" y="670" text-anchor="start">PHP：防止SQL注入、XSS攻击</text>
+
+    <!-- 监控与维护 -->
+    <rect x="100" y="900" width="600" height="300" fill="#fbe9e7" rx="10" ry="10" />
+    <text x="400" y="940" text-anchor="middle" font-size="24" font-weight="bold">监控与维护</text>
+    <text x="120" y="980" text-anchor="start">Linux：系统资源监控（top、htop等）</text>
+    <text x="120" y="1010" text-anchor="start">Nginx：日志分析、状态监控</text>
+    <text x="120" y="1040" text-anchor="start">MySQL：慢查询日志、主从复制监控</text>
+    <text x="120" y="1070" text-anchor="start">PHP：错误日志分析、性能监控</text>
+
+    <!-- 高可用与扩展 -->
+    <rect x="800" y="900" width="600" height="300" fill="#f3e5f5" rx="10" ry="10" />
+    <text x="1100" y="940" text-anchor="middle" font-size="24" font-weight="bold">高可用与扩展</text>
+    <text x="820" y="980" text-anchor="start">Nginx：Keepalived实现高可用</text>
+    <text x="820" y="1010" text-anchor="start">MySQL：主从复制、读写分离</text>
+    <text x="820" y="1040" text-anchor="start">PHP：分布式部署、负载均衡</text>
+    <text x="820" y="1070" text-anchor="start">集群技术：LVS、HAProxy等</text>
+
+    <!-- 自动化部署 -->
+    <rect x="1500" y="900" width="300" height="300" fill="#fff8e1" rx="10" ry="10" />
+    <text x="1650" y="940" text-anchor="middle" font-size="24" font-weight="bold">自动化部署</text>
+    <text x="1520" y="980" text-anchor="start">Ansible：批量配置管理</text>
+    <text x="1520" y="1010" text-anchor="start">Docker：容器化部署</text>
+    <text x="1520" y="1040" text-anchor="start">Kubernetes：容器编排</text>
+
+    <!-- 连线 -->
+    <line x1="400" y1="400" x2="400" y2="500" stroke="black" stroke-width="2" />
+    <line x1="800" y1="400" x2="800" y2="500" stroke="black" stroke-width="2" />
+    <line x1="1200" y1="400" x2="1200" y2="500" stroke="black" stroke-width="2" />
+    <line x1="1600" y1="400" x2="1600" y2="500" stroke="black" stroke-width="2" />
+    <line x1="400" y1="800" x2="400" y2="900" stroke="black" stroke-width="2" />
+    <line x1="800" y1="800" x2="800" y2="900" stroke="black" stroke-width="2" />
+    <line x1="1200" y1="800" x2="1200" y2="900" stroke="black" stroke-width="2" />
+    <line x1="1600" y1="800" x2="1600" y2="900" stroke="black" stroke-width="2" />
+</svg>
+    </p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+</body>
+</html>
