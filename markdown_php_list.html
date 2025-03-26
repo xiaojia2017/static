@@ -219,14 +219,13 @@ Week5-6：云原生转型
     <div id="rendered-content"></div>
 <script src="https://shenzhen2019.oss-cn-shenzhen.aliyuncs.com/images/20250326/marked.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // 获取Markdown内容
-            const markdownContent = document.getElementById('markdown-content').textContent;
-            // 使用marked将Markdown转换为HTML
-            const htmlContent = marked.parse(markdownContent);
-            // 将转换后的HTML插入到页面中
-            document.getElementById('rendered-content').innerHTML = htmlContent;
-        });
+        // 获取Markdown内容
+        const markdownContent = document.getElementById('markdown-content').textContent;
+        // 使用marked将Markdown转换为HTML
+        const htmlContent = marked.parse(markdownContent);
+        // 将转换后的HTML插入到页面中
+        document.getElementById('rendered-content').innerHTML = htmlContent;
+    </script>
 </body>
 
 </html>    
