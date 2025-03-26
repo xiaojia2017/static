@@ -245,73 +245,68 @@ Week5-6：云原生转型
 建议在第四周开始同步投递简历，将学习过程转化为面试谈资。保持技术博客更新，很多企业会主动关注持续输出的技术人才。期待你转型成功的好消息！
     </div>
     <div id="rendered-content"></div>
-<script src="https://shenzhen2019.oss-cn-shenzhen.aliyuncs.com/images/20250326/marked.min.js"></script>
-    <script>
+<script>
         // 确保整个页面加载完成后执行
         window.onload = function () {
             try {
                 // 获取原始Markdown内容
-                const rawMarkdownContent = document.getElementById('markdown-content').textContent;
+                const rawMarkdownContent = document.getElementById('markdown-content').textContent.trim();
+                console.log("Markdown内容:", rawMarkdownContent);
 
-                // 转义特殊字符
-                const markdownContent = rawMarkdownContent.replace(/</g, '<').replace(/>/g, '>');
-                console.log("Markdown内容:", markdownContent);
-
-                // 使用marked解析Markdown
-                const htmlContent = parseMarkdown(markdownContent);
-                console.log("解析后的HTML内容:", htmlContent);
-
-                // 将解析后的HTML插入到页面中
-                document.getElementById('rendered-content').innerHTML = htmlContent;
+                // 调用GitHub Markdown API解析Markdown
+                fetchMarkdownHtml(rawMarkdownContent).then(html => {
+                    // 将解析后的HTML插入到页面中
+                    document.getElementById('rendered-content').innerHTML = html;
+                }).catch(error => {
+                    console.error("Markdown解析失败:", error);
+                    document.getElementById('rendered-content').innerHTML = "<p>内容加载失败，请稍后重试。</p>";
+                });
             } catch (error) {
-                console.error("Markdown解析失败:", error);
-                document.getElementById('rendered-content').innerHTML = "<p>内容加载失败，请稍后重试。</p>";
+                console.error("初始化失败:", error);
+                document.getElementById('rendered-content').innerHTML = "<p>初始化失败，请检查控制台日志。</p>";
             }
         };
-		
-		/**
-         * 原生Markdown解析函数
+
+        /**
+         * 使用GitHub Markdown API解析Markdown内容
          * @param {string} markdown - 原始Markdown内容
-         * @returns {string} - 解析后的HTML内容
+         * @returns {Promise<string>} - 解析后的HTML内容
          */
-        function parseMarkdown(markdown) {
-            let html = markdown;
+        async function fetchMarkdownHtml(markdown) {
+            // GitHub Markdown API的URL
+            const apiUrl = 'https://api.github.com/markdown';
 
-            // 1. 解析标题 (#, ##, ###, ####, #####, ######)
-            html = html.replace(/^(#{1,6})\s+(.+)$/gm, (match, hashes, content) => {
-                const level = hashes.length;
-                return `<h${level}>${content}</h${level}>`;
-            });
+            // 构造请求体
+            const requestBody = {
+                text: markdown, // Markdown原始内容
+                mode: 'markdown' // 指定模式为Markdown（支持其他模式如"gfm"）
+            };
 
-            // 2. 解析加粗 (**text** 或 __text__)
-            html = html.replace(/(\*\*|__)(.*?)\1/g, '<strong>$2</strong>');
+            try {
+                // 发送POST请求到GitHub Markdown API
+                const response = await fetch(apiUrl, {
+                    method: 'POST', // 使用POST方法
+                    headers: {
+                        'Content-Type': 'application/json', // 指定请求体为JSON格式
+                        'Accept': 'application/vnd.github+json' // 指定接受GitHub的API响应格式
+                    },
+                    body: JSON.stringify(requestBody) // 将请求体转换为JSON字符串
+                });
 
-            // 3. 解析斜体 (*text* 或 _text_)
-            html = html.replace(/(\*|_)(.*?)\1/g, '<em>$2</em>');
+                // 检查响应状态码是否为200（成功）
+                if (!response.ok) {
+                    throw new Error(`HTTP错误！状态码: ${response.status}`);
+                }
 
-            // 4. 解析无序列表 (- 或 *)
-            html = html.replace(/^\s*[-*]\s+(.*)$/gm, '<li>$1</li>');
-            html = html.replace(/(<li>.*<\/li>)+/g, '<ul>$&</ul>');
-
-            // 5. 解析有序列表 (数字.)
-            html = html.replace(/^\s*(\d+)\.\s+(.*)$/gm, '<li>$2</li>');
-            html = html.replace(/(<li>.*<\/li>)+/g, '<ol>$&</ol>');
-
-            // 6. 解析链接 [text](url)
-            html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
-
-            // 7. 解析图片 ![alt](url)
-            html = html.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1">');
-
-            // 8. 解析段落
-            html = html.replace(/\n\n+/g, '</p><p>');
-            html = `<p>${html}</p>`;
-
-            // 9. 清理多余的换行符
-            html = html.replace(/\n/g, '<br>');
-
-            return html.trim();
+                // 解析响应数据为HTML字符串
+                const html = await response.text();
+                return html; // 返回解析后的HTML
+            } catch (error) {
+                // 捕获并抛出错误
+                throw error;
+            }
         }
+    </script>
     </script>
 </body>
 
