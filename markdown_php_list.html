@@ -265,7 +265,7 @@ Week5-6：云原生转型
 
         window.onload = function () {
             // 确保marked库已加载
-            markedObj = marked.marked || marked; // 兼容不同版本的marked
+            markedObj = typeof marked === 'function' ? marked : marked.marked; // 兼容不同版本的marked
             console.log('所有资源已加载完成', markedObj);
 
             // 调用函数处理Markdown内容
@@ -273,15 +273,17 @@ Week5-6：云原生转型
         };
 
         // 定义DocObject对象
-        const DocObject = {
+         const DocObject = {
             markdown_content: function () {
                 // 获取所有包含Markdown内容的元素
                 const markdownElements = document.querySelectorAll('.markdown_content');
 
                 // 遍历每个元素，解析Markdown并更新HTML
                 markdownElements.forEach(function (ele) {
-                    const markdownText = ele.textContent || ele.innerText; // 获取原始Markdown内容
+                    const markdownText = ele.innerHTML.trim().replace(/</g, '<').replace(/>/g, '>'); // 提取并转义内容
+                    console.log("提取的Markdown内容:", markdownText); // 打印内容以确认
                     const htmlContent = markedObj.parse(markdownText); // 使用marked解析Markdown
+                    console.log("解析后的HTML内容:", htmlContent); // 打印解析结果
                     ele.innerHTML = htmlContent; // 将解析后的HTML插入到元素中
                 });
             },
