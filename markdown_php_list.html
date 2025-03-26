@@ -41,7 +41,7 @@
 
 <body>
     <!-- 这里放置Markdown内容 -->
-    <div class="markdown-content">
+    <div id="markdown-content">
 # 整体目标拆解
 
 ## 技术硬实力
@@ -246,47 +246,27 @@ Week5-6：云原生转型
     </div>
     <div id="rendered-content"></div>
 <script src="https://shenzhen2019.oss-cn-shenzhen.aliyuncs.com/images/20250326/marked.min.js"></script>
-<!--    <script>
-        try {
-			const rawMarkdownContent = document.getElementById('markdown-content').textContent;
-			const markdownContent = rawMarkdownContent.replace(/</g, '<').replace(/>/g, '>'); // 转义特殊字符
-			console.log("Markdown内容:", markdownContent);
-			const htmlContent = marked.parse(markdownContent);
-			document.getElementById('rendered-content').innerHTML = htmlContent;
-		} catch (error) {
-			console.error("Markdown解析失败:", error);
-			document.getElementById('rendered-content').innerHTML = "<p>内容加载失败，请稍后重试。</p>";
-		}
-    </script>-->
-	
-	 <script>
-        // 初始化
-        let markedObj = null;
-
+    <script>
+        // 确保整个页面加载完成后执行
         window.onload = function () {
-            // 确保marked库已加载
-            markedObj = typeof marked === 'function' ? marked : marked.marked; // 兼容不同版本的marked
-            console.log('所有资源已加载完成', markedObj);
+            try {
+                // 获取原始Markdown内容
+                const rawMarkdownContent = document.getElementById('markdown-content').textContent;
 
-            // 调用函数处理Markdown内容
-            DocObject.markdown_content();
-        };
+                // 转义特殊字符
+                const markdownContent = rawMarkdownContent.replace(/</g, '<').replace(/>/g, '>');
+                console.log("Markdown内容:", markdownContent);
 
-        // 定义DocObject对象
-         const DocObject = {
-            markdown_content: function () {
-                // 获取所有包含Markdown内容的元素
-                const markdownElements = document.querySelectorAll('.markdown_content');
+                // 使用marked解析Markdown
+                const htmlContent = marked.parse(markdownContent);
+                console.log("解析后的HTML内容:", htmlContent);
 
-                // 遍历每个元素，解析Markdown并更新HTML
-                markdownElements.forEach(function (ele) {
-                    const markdownText = ele.innerHTML.trim().replace(/</g, '<').replace(/>/g, '>'); // 提取并转义内容
-                    console.log("提取的Markdown内容:", markdownText); // 打印内容以确认
-                    const htmlContent = markedObj.parse(markdownText); // 使用marked解析Markdown
-                    console.log("解析后的HTML内容:", htmlContent); // 打印解析结果
-                    ele.innerHTML = htmlContent; // 将解析后的HTML插入到元素中
-                });
-            },
+                // 将解析后的HTML插入到页面中
+                document.getElementById('rendered-content').innerHTML = htmlContent;
+            } catch (error) {
+                console.error("Markdown解析失败:", error);
+                document.getElementById('rendered-content').innerHTML = "<p>内容加载失败，请稍后重试。</p>";
+            }
         };
     </script>
 </body>
