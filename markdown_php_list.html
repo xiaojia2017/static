@@ -8,12 +8,39 @@
     <!-- 引入marked库 -->
     <!--<script src="https://github.mzhiyin.cn/js/marked.min.js"></script>-->
 	<!--<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>-->
-	
+	<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+    }
+    #rendered-content {
+        max-width: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+        overflow-wrap: break-word; /* 防止长单词超出容器 */
+    }
+    h1, h2, h3, h4, h5, h6 {
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+    p, ul, ol {
+        margin-bottom: 15px;
+    }
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+	#markdown-content {
+		display: none;
+	}
+</style>
 </head>
 
 <body>
     <!-- 这里放置Markdown内容 -->
-    <div id="markdown-content" style="display: none;">
+    <div id="markdown-content">
 # 整体目标拆解
 
 ## 技术硬实力
@@ -219,12 +246,14 @@ Week5-6：云原生转型
     <div id="rendered-content"></div>
 <script src="https://shenzhen2019.oss-cn-shenzhen.aliyuncs.com/images/20250326/marked.min.js"></script>
     <script>
-        // 获取Markdown内容
-        const markdownContent = document.getElementById('markdown-content').textContent;
-        // 使用marked将Markdown转换为HTML
-        const htmlContent = marked.marked.parse(markdownContent);
-        // 将转换后的HTML插入到页面中
-        document.getElementById('rendered-content').innerHTML = htmlContent;
+        try {
+			const markdownContent = document.getElementById('markdown-content').textContent;
+			const htmlContent = marked.marked.parse(markdownContent);
+			document.getElementById('rendered-content').innerHTML = htmlContent;
+		} catch (error) {
+			console.error("Markdown解析失败:", error);
+			document.getElementById('rendered-content').innerHTML = "<p>内容加载失败，请稍后重试。</p>";
+		}
     </script>
 </body>
 
