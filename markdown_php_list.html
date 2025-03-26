@@ -222,7 +222,7 @@ Week5-6：云原生转型
         // 获取Markdown内容
         const markdownContent = document.getElementById('markdown-content').textContent;
         // 使用marked将Markdown转换为HTML
-        const htmlContent = marked.parse(markdownContent);
+        const htmlContent = marked.marked.parse(markdownContent);
         // 将转换后的HTML插入到页面中
         document.getElementById('rendered-content').innerHTML = htmlContent;
     </script>
