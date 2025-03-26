@@ -248,6 +248,7 @@ Week5-6：云原生转型
     <script>
         try {
 			const markdownContent = document.getElementById('markdown-content').textContent;
+			console.log("Markdown内容:", markdownContent);
 			const htmlContent = marked.parse(markdownContent);
 			document.getElementById('rendered-content').innerHTML = htmlContent;
 		} catch (error) {
