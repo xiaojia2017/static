@@ -41,7 +41,7 @@
 
 <body>
     <!-- 这里放置Markdown内容 -->
-    <div id="markdown-content">
+    <div class="markdown-content">
 # 整体目标拆解
 
 ## 技术硬实力
@@ -246,7 +246,7 @@ Week5-6：云原生转型
     </div>
     <div id="rendered-content"></div>
 <script src="https://shenzhen2019.oss-cn-shenzhen.aliyuncs.com/images/20250326/marked.min.js"></script>
-    <script>
+<!--    <script>
         try {
 			const rawMarkdownContent = document.getElementById('markdown-content').textContent;
 			const markdownContent = rawMarkdownContent.replace(/</g, '<').replace(/>/g, '>'); // 转义特殊字符
@@ -257,6 +257,35 @@ Week5-6：云原生转型
 			console.error("Markdown解析失败:", error);
 			document.getElementById('rendered-content').innerHTML = "<p>内容加载失败，请稍后重试。</p>";
 		}
+    </script>-->
+	
+	 <script>
+        // 初始化
+        let markedObj = null;
+
+        window.onload = function () {
+            // 确保marked库已加载
+            markedObj = marked.marked || marked; // 兼容不同版本的marked
+            console.log('所有资源已加载完成', markedObj);
+
+            // 调用函数处理Markdown内容
+            DocObject.markdown_content();
+        };
+
+        // 定义DocObject对象
+        const DocObject = {
+            markdown_content: function () {
+                // 获取所有包含Markdown内容的元素
+                const markdownElements = document.querySelectorAll('.markdown_content');
+
+                // 遍历每个元素，解析Markdown并更新HTML
+                markdownElements.forEach(function (ele) {
+                    const markdownText = ele.textContent || ele.innerText; // 获取原始Markdown内容
+                    const htmlContent = markedObj.parse(markdownText); // 使用marked解析Markdown
+                    ele.innerHTML = htmlContent; // 将解析后的HTML插入到元素中
+                });
+            },
+        };
     </script>
 </body>
 
