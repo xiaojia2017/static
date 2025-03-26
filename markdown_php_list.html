@@ -258,7 +258,7 @@ Week5-6：云原生转型
                 console.log("Markdown内容:", markdownContent);
 
                 // 使用marked解析Markdown
-                const htmlContent = marked.parse(markdownContent);
+                const htmlContent = parseMarkdown(markdownContent);
                 console.log("解析后的HTML内容:", htmlContent);
 
                 // 将解析后的HTML插入到页面中
@@ -268,6 +268,50 @@ Week5-6：云原生转型
                 document.getElementById('rendered-content').innerHTML = "<p>内容加载失败，请稍后重试。</p>";
             }
         };
+		
+		/**
+         * 原生Markdown解析函数
+         * @param {string} markdown - 原始Markdown内容
+         * @returns {string} - 解析后的HTML内容
+         */
+        function parseMarkdown(markdown) {
+            let html = markdown;
+
+            // 1. 解析标题 (#, ##, ###, ####, #####, ######)
+            html = html.replace(/^(#{1,6})\s+(.+)$/gm, (match, hashes, content) => {
+                const level = hashes.length;
+                return `<h${level}>${content}</h${level}>`;
+            });
+
+            // 2. 解析加粗 (**text** 或 __text__)
+            html = html.replace(/(\*\*|__)(.*?)\1/g, '<strong>$2</strong>');
+
+            // 3. 解析斜体 (*text* 或 _text_)
+            html = html.replace(/(\*|_)(.*?)\1/g, '<em>$2</em>');
+
+            // 4. 解析无序列表 (- 或 *)
+            html = html.replace(/^\s*[-*]\s+(.*)$/gm, '<li>$1</li>');
+            html = html.replace(/(<li>.*<\/li>)+/g, '<ul>$&</ul>');
+
+            // 5. 解析有序列表 (数字.)
+            html = html.replace(/^\s*(\d+)\.\s+(.*)$/gm, '<li>$2</li>');
+            html = html.replace(/(<li>.*<\/li>)+/g, '<ol>$&</ol>');
+
+            // 6. 解析链接 [text](url)
+            html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
+
+            // 7. 解析图片 ![alt](url)
+            html = html.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1">');
+
+            // 8. 解析段落
+            html = html.replace(/\n\n+/g, '</p><p>');
+            html = `<p>${html}</p>`;
+
+            // 9. 清理多余的换行符
+            html = html.replace(/\n/g, '<br>');
+
+            return html.trim();
+        }
     </script>
 </body>
 
