@@ -1,0 +1,48 @@
+.post{ color:#444; font-family:Georgia, Palatino, 'Palatino Linotype', Times, 'Times New Roman', serif; font-size:13px; line-height:1.5em; padding:1em;
+background:#fefefe; }
+
+.post h1,.post h2,.post h3,.post h4,.post h5,.post h6 { font-weight: bold; }
+
+.post h1 { color: #000000; font-size: 28px; }
+
+.post h2 { color: #000000; font-size: 24px; }
+
+.post h3 { font-size: 18px; }
+
+h4 { font-size: 16px; }
+
+.post h5 { font-size: 14px; }
+
+.post h6 { color: #777777; background-color: inherit; font-size: 14px; }
+
+.post hr { height: 0.2em; border: 0; color: #CCCCCC; background-color: #CCCCCC; }
+
+.post p,.post blockquote,.post ul,.post ol,.post dl,.post li,.post table,.post pre { margin: 15px 0; }
+
+.post p{ margin:1em 0; }
+
+.post pre { background-color: #F8F8F8;
+border: 1px solid #CCCCCC; border-radius: 3px; overflow: auto; padding: 5px; }
+
+.post pre code ,.pose .xcode{ background-color: #F8F8F8; border: none;
+padding: 0; }
+
+.post code,.post .xcode { font-family: Consolas, Monaco, Andale Mono, monospace; background-color:#F8F8F8; border: 1px solid #CCCCCC; border-radius: 3px; padding: 0 0.2em; line-height: 1; }
+
+.post pre > code { border: 0; margin: 0; padding: 0; }
+
+.post a:focus{ outline: thin dotted; } .post a:hover, a:active{ outline: 0; }
+
+.post ::-moz-selection{background:rgba(255,255,0,0.3);color:#000} .post ::selection{background:rgba(255,255,0,0.3);color:#000}
+
+.post a::-moz-selection{background:rgba(255,255,0,0.3);color:#0645ad} .post a::selection{background:rgba(255,255,0,0.3);color:#0645ad}
+
+.post blockquote{ color:#666666; margin:0; padding-left: 3em; border-left: 0.5em #EEE solid; }
+
+.post ul,.post ol { margin: 1em 0; padding: 0 0 0 2em; } .post li p:last-child { margin:0 } .post dd { margin: 0 0 0 2em; }
+
+.post img { border: 0; -ms-interpolation-mode: bicubic; vertical-align: middle; max-width:100%;}
+
+table { border-collapse: collapse; border-spacing: 0; } td { vertical-align: top; } .post @media only screen and (min-width: 480px) { body{font-size:14px;} }
+
+.post @media only screen and (min-width: 768px) { body{font-size:16px;} }
