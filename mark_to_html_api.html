@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Markdown API 示例</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #markdown-input {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #rendered-content {
+            max-width: 800px;
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>GitHub Markdown API 示例</h1>
+    <!-- 输入Markdown内容的文本框 -->
+    <textarea id="markdown-input" placeholder="请输入Markdown内容..."></textarea>
+    <!-- 渲染后的HTML内容容器 -->
+    <div id="rendered-content">渲染后的内容将显示在这里。</div>
+
+    <script>
+        // 等待页面加载完成后再执行脚本
+        window.onload = function () {
+            // 获取输入框和渲染容器的引用
+            const markdownInput = document.getElementById('markdown-input'); // Markdown输入框
+            const renderedContent = document.getElementById('rendered-content'); // 渲染后的内容容器
+
+            // 监听输入框的内容变化事件
+            markdownInput.addEventListener('input', function () {
+                // 获取用户输入的Markdown内容
+                const markdownText = markdownInput.value;
+
+                // 调用GitHub Markdown API解析Markdown内容
+                fetchMarkdownHtml(markdownText).then(html => {
+                    // 将解析后的HTML插入到渲染容器中
+                    renderedContent.innerHTML = html;
+                }).catch(error => {
+                    // 如果发生错误，显示错误信息
+                    console.error("Markdown解析失败:", error);
+                    renderedContent.innerHTML = "<p>内容加载失败，请稍后重试。</p>";
+                });
+            });
+        };
+
+        /**
+         * 使用GitHub Markdown API解析Markdown内容
+         * @param {string} markdown - 原始Markdown内容
+         * @returns {Promise<string>} - 解析后的HTML内容
+         */
+        async function fetchMarkdownHtml(markdown) {
+            // GitHub Markdown API的URL
+            const apiUrl = 'https://api.github.com/markdown';
+
+            // 构造请求体（POST请求需要发送JSON数据）
+            const requestBody = {
+                text: markdown, // Markdown原始内容
+                mode: 'markdown' // 指定模式为Markdown（支持其他模式如"gfm"）
+            };
+
+            try {
+                // 发送POST请求到GitHub Markdown API
+                const response = await fetch(apiUrl, {
+                    method: 'POST', // 使用POST方法
+                    headers: {
+                        'Content-Type': 'application/json', // 指定请求体为JSON格式
+                        'Accept': 'application/vnd.github+json' // 指定接受GitHub的API响应格式
+                    },
+                    body: JSON.stringify(requestBody) // 将请求体转换为JSON字符串
+                });
+
+                // 检查响应状态码是否为200（成功）
+                if (!response.ok) {
+                    throw new Error(`HTTP错误！状态码: ${response.status}`);
+                }
+
+                // 解析响应数据为HTML字符串
+                const html = await response.text();
+                return html; // 返回解析后的HTML
+            } catch (error) {
+                // 捕获并抛出错误
+                throw error;
+            }
+        }
+    </script>
+</body>
+
+</html>

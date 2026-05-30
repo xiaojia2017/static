@@ -1,0 +1,194 @@
+version: '3.8'  # 指定 Docker Compose 文件版本为 3.8（支持最新的功能和语法）
+
+services:  # 定义服务列表
+  # Web 服务
+  web:
+    image: nginx:latest  # 使用官方 Nginx 镜像（最新版本）
+    #container_name: web  # 设置容器名称为 "web"，便于管理
+    ports:  # 端口映射：将主机端口映射到容器端口
+      - "80:80"  # 主机的 80 端口映射到容器的 80 端口（HTTP）
+      - "8007:8007"  # 主机的 8007 端口映射到容器的 8007 端口（自定义端口）
+    restart: always  # 自动重启策略：容器退出时自动重启
+    environment:  # 设置环境变量
+      TZ: Asia/Shanghai  # 设置时区为上海（东八区）
+    volumes:  # 数据卷挂载：将主机目录或文件挂载到容器中
+      - /mnt/hgfs/WWW:/var/www/html  # 将主机的项目目录挂载到容器的默认 Web 根目录
+      - /mnt/hgfs/WWW/nginx_configs:/etc/nginx/conf.d  # 将主机的 Nginx 配置目录挂载到容器的配置目录
+    depends_on:  # 依赖关系：确保以下服务启动后才启动该服务
+      - php  # 依赖 PHP 服务
+      - db  # 依赖 MySQL 数据库服务
+      - redis  # 依赖 Redis 缓存服务
+      - elasticsearch  # 依赖 ElasticSearch 服务
+      - kafka  # 依赖 Kafka 服务
+      - rabbitmq  # 依赖 RabbitMQ 服务
+      - mongodb  # 新增：依赖 MongoDB 服务
+    networks:  # 加入网络：指定容器所属的网络
+      - app-network  # 加入名为 "app-network" 的桥接网络
+
+  # PHP 服务
+  php:
+    build:  # 使用自定义构建镜像
+      context: .  # 构建上下文为当前目录
+      dockerfile: php.Dockerfile  # 使用名为 "php.Dockerfile" 的 Dockerfile 文件
+    #container_name: php  # 设置容器名称为 "php"
+    ports:  # 端口映射
+      - "9501:9501"  # 主机的 9501 端口映射到容器的 9501 端口
+      - "9502:9502"  # 主机的 9502 端口映射到容器的 9502 端口
+    restart: always  # 自动重启策略
+    volumes:  # 数据卷挂载
+      - /mnt/hgfs/WWW:/var/www/html  # 将主机的项目目录挂载到容器的工作目录
+    environment:  # 环境变量
+      TZ: Asia/Shanghai  # 设置时区为上海
+    networks:  # 加入网络
+      - app-network  # 加入名为 "app-network" 的桥接网络
+
+  # MySQL 数据库
+  db:
+    image: mysql:5.7  # 使用官方 MySQL 5.7 镜像
+    #container_name: db  # 设置容器名称为 "db"
+    environment:  # 环境变量
+      MYSQL_ROOT_PASSWORD: example  # 设置 MySQL root 用户的密码为 "example"
+      MYSQL_DATABASE: my_php_db  # 创建名为 "my_php_db" 的数据库
+      MYSQL_USER: user  # 创建名为 "user" 的用户
+      MYSQL_PASSWORD: password  # 设置用户的密码为 "password"
+      TZ: Asia/Shanghai  # 设置时区为上海
+    restart: always  # 自动重启策略
+    volumes:  # 数据卷挂载
+      - db_data:/var/lib/mysql  # 挂载数据卷以持久化 MySQL 数据
+      - ./mysql_custom.cnf:/etc/mysql/conf.d/mysql_custom.cnf  # 挂载自定义 MySQL 配置文件
+    networks:  # 加入网络
+      - app-network  # 加入名为 "app-network" 的桥接网络
+    ports:  # 端口映射
+      - "3306:3306"  # 主机的 3306 端口映射到容器的 3306 端口（MySQL 默认端口）
+
+  # Redis 缓存
+  redis:
+    image: redis:latest  # 使用官方 Redis 最新镜像
+    #container_name: redis  # 设置容器名称为 "redis"
+    environment:  # 环境变量
+      TZ: Asia/Shanghai  # 设置时区为上海
+    volumes:  # 数据卷挂载
+      - redis_data:/data  # 挂载数据卷以持久化 Redis 数据
+      - ./redis.conf:/usr/local/etc/redis/redis.conf  # 挂载自定义 Redis 配置文件
+    ports:  # 端口映射
+      - "6379:6379"  # 主机的 6379 端口映射到容器的 6379 端口（Redis 默认端口）
+    networks:  # 加入网络
+      - app-network  # 加入名为 "app-network" 的桥接网络
+    restart: always  # 自动重启策略
+
+  # ElasticSearch
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.3  # 使用官方 ElasticSearch 7.17.3 镜像
+    #container_name: elasticsearch  # 设置容器名称为 "elasticsearch"
+    environment:  # 环境变量
+      - discovery.type=single-node  # 设置为单节点模式（适合开发环境）
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m  # 设置 JVM 内存限制为最小 512MB 和最大 512MB
+      - TZ=Asia/Shanghai  # 设置时区为上海
+    volumes:  # 数据卷挂载
+      - es_data:/usr/share/elasticsearch/data  # 挂载数据卷以持久化 ElasticSearch 数据
+      - ./elasticsearch/plugins:/usr/share/elasticsearch/plugins # 挂载自定义插件目录
+    ports:  # 端口映射
+      - "9200:9200"  # 主机的 9200 端口映射到容器的 9200 端口（REST API 端口）
+      - "9300:9300"  # 主机的 9300 端口映射到容器的 9300 端口（集群通信端口）
+    networks:  # 加入网络
+      - app-network  # 加入名为 "app-network" 的桥接网络
+    healthcheck:  # 健康检查
+      test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]  # 检查 ElasticSearch 是否健康
+      interval: 30s  # 每隔 30 秒检查一次
+      timeout: 10s  # 超时时间为 10 秒
+      retries: 3  # 如果失败，最多重试 3 次
+    restart: always  # 自动重启策略
+
+  # Zookeeper
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0  # 使用 Confluent 提供的官方 Zookeeper 镜像
+    #container_name: zookeeper  # 设置容器名称为 "zookeeper"
+    environment:  # 环境变量
+      ZOOKEEPER_CLIENT_PORT: 2181  # 设置 Zookeeper 客户端连接端口为 2181
+      ZOOKEEPER_TICK_TIME: 2000  # 设置心跳间隔时间为 2000 毫秒
+      TZ: Asia/Shanghai  # 设置时区为上海
+    volumes:  # 数据卷挂载
+      - zk_data:/data  # 挂载数据卷以持久化 Zookeeper 数据
+    networks:  # 加入网络
+      - app-network  # 加入名为 "app-network" 的桥接网络
+    restart: always  # 自动重启策略
+
+  # Kafka
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0  # 使用 Confluent 提供的官方 Kafka 镜像
+    #container_name: kafka  # 设置容器名称为 "kafka"
+    depends_on:  # 依赖关系
+      - zookeeper  # 依赖 Zookeeper 服务
+    environment:  # 环境变量
+      KAFKA_BROKER_ID: 1  # 设置 Kafka Broker 的唯一 ID 为 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181  # 指定 Zookeeper 地址
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9093,OUTSIDE://localhost:9092  # 配置内外网监听器
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT  # 映射监听协议
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE  # 设置 Broker 间通信使用的监听器名称
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1  # 设置偏移量主题的副本因子为 1（单节点模式）
+      KAFKA_CREATE_TOPICS: "test_topic:1:1"  # 初始化创建一个名为 "test_topic" 的 Topic（1 分区，1 副本）
+      TZ: Asia/Shanghai  # 设置时区为上海
+    ports:  # 端口映射
+      - "9092:9092"  # 主机的 9092 端口映射到容器的 9092 端口（外部访问端口）
+    volumes:  # 数据卷挂载
+      - kafka_data:/var/lib/kafka/data  # 挂载数据卷以持久化 Kafka 数据
+    networks:  # 加入网络
+      - app-network  # 加入名为 "app-network" 的桥接网络
+    restart: always  # 自动重启策略
+
+  # RabbitMQ
+  rabbitmq:
+    image: rabbitmq:3.12-management-alpine  # 使用官方 RabbitMQ 镜像（带管理界面的轻量版）
+    #container_name: rabbitmq  # 设置容器名称为 "rabbitmq"
+    environment:  # 环境变量
+      RABBITMQ_DEFAULT_USER: admin  # 设置默认用户名为 "admin"
+      RABBITMQ_DEFAULT_PASS: admin123  # 设置默认密码为 "admin123"
+      TZ: Asia/Shanghai  # 设置时区为上海
+    ports:  # 端口映射
+      - "5672:5672"  # 主机的 5672 端口映射到容器的 5672 端口（AMQP 协议端口）
+      - "15672:15672"  # 主机的 15672 端口映射到容器的 15672 端口（管理界面端口）
+    volumes:  # 数据卷挂载
+      - rabbitmq_data:/var/lib/rabbitmq  # 挂载数据卷以持久化 RabbitMQ 数据
+      - rabbitmq_config:/etc/rabbitmq  # 挂载配置卷以持久化 RabbitMQ 配置文件
+    networks:  # 加入网络
+      - app-network  # 加入名为 "app-network" 的桥接网络
+    healthcheck:  # 健康检查
+      test: ["CMD", "rabbitmq-diagnostics", "check_running"]  # 检查 RabbitMQ 是否正常运行
+      interval: 30s  # 每隔 30 秒检查一次
+      timeout: 10s  # 超时时间为 10 秒
+      retries: 3  # 如果失败，最多重试 3 次
+    restart: always  # 自动重启策略
+    
+  # MongoDB 服务
+  mongodb:
+    image: mongo:6.0  # 使用官方 MongoDB 镜像（版本 6.0）
+    #container_name: mongodb  # 设置容器名称为 "mongodb"
+    environment:  # 环境变量
+      MONGO_INITDB_ROOT_USERNAME: root  # 设置 MongoDB 的超级用户名称
+      MONGO_INITDB_ROOT_PASSWORD: example  # 设置 MongoDB 的超级用户密码
+      TZ: Asia/Shanghai  # 设置时区为上海
+    volumes:  # 数据卷挂载
+      - mongo_data:/data/db  # 挂载数据卷以持久化 MongoDB 数据
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js  # 挂载初始化脚本
+    ports:  # 端口映射
+      - "27017:27017"  # 主机的 27017 端口映射到容器的 27017 端口（MongoDB 默认端口）
+    networks:  # 加入网络
+      - app-network  # 加入名为 "app-network" 的桥接网络
+    restart: always  # 自动重启策略
+
+
+# 网络配置
+networks:
+  app-network:  # 定义名为 "app-network" 的网络
+    driver: bridge  # 使用桥接网络驱动
+
+# 数据卷配置
+volumes:
+  db_data:    # 定义名为 "db_data" 的数据卷，用于 MySQL 数据持久化
+  redis_data: # 定义名为 "redis_data" 的数据卷，用于 Redis 数据持久化
+  es_data:    # 定义名为 "es_data" 的数据卷，用于 ElasticSearch 数据持久化
+  zk_data:    # 定义名为 "zk_data" 的数据卷，用于 Zookeeper 数据持久化
+  kafka_data: # 定义名为 "kafka_data" 的数据卷，用于 Kafka 数据持久化
+  rabbitmq_data: # 定义名为 "rabbitmq_data" 的数据卷，用于 RabbitMQ 数据持久化
+  rabbitmq_config: # 定义名为 "rabbitmq_config" 的数据卷，用于 RabbitMQ 配置文件持久化
+  mongo_data:  # 定义名为 "mongo_data" 的数据卷，用于 MongoDB 数据持久化

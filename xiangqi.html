@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网页版中国象棋</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        canvas {
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="chessboard" width="600" height="650"></canvas>
+    <script>
+        const canvas = document.getElementById('chessboard');
+        const ctx = canvas.getContext('2d');
+
+        const squareSize = 60;
+        const rows = 10;
+        const cols = 9;
+
+        // 初始化棋盘数据，0 表示空位，1 - 16 表示红方棋子，17 - 32 表示黑方棋子
+        const chessboard = [
+            [17, 18, 19, 20, 21, 20, 19, 18, 17],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 22, 0, 0, 0, 0, 0, 22, 0],
+            [23, 0, 23, 0, 23, 0, 23, 0, 23],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [3, 0, 3, 0, 3, 0, 3, 0, 3],
+            [0, 2, 0, 0, 0, 0, 0, 2, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [1, 2, 3, 4, 5, 4, 3, 2, 1]
+        ];
+
+        const pieceNames = [
+            '', '車', '馬', '相', '仕', '帥', '炮', '兵',
+            '', '車', '馬', '象', '士', '將', '炮', '卒'
+        ];
+
+        let currentPlayer = 1; // 1 表示红方，2 表示黑方
+        let selectedPiece = null;
+
+        function drawBoard() {
+            ctx.fillStyle = '#F5DEB3';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    ctx.strokeStyle = '#000';
+                    ctx.strokeRect(j * squareSize, i * squareSize, squareSize, squareSize);
+                }
+            }
+
+            // 绘制楚河汉界
+            ctx.fillStyle = '#FFE4B5';
+            ctx.fillRect(0, 4 * squareSize, canvas.width, squareSize);
+            ctx.font = '30px Arial';
+            ctx.fillStyle = '#8B4513';
+            ctx.fillText('楚河', 2 * squareSize, 4.5 * squareSize);
+            ctx.fillText('汉界', 6 * squareSize, 4.5 * squareSize);
+        }
+
+        function drawPieces() {
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const piece = chessboard[i][j];
+                    if (piece > 0) {
+                        const x = j * squareSize + squareSize / 2;
+                        const y = i * squareSize + squareSize / 2;
+                        ctx.beginPath();
+                        ctx.arc(x, y, squareSize / 2 - 5, 0, 2 * Math.PI);
+                        ctx.fillStyle = piece <= 16 ? 'red' : 'black';
+                        ctx.fill();
+                        ctx.strokeStyle = 'white';
+                        ctx.stroke();
+                        ctx.font = '30px Arial';
+                        ctx.fillStyle = 'white';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(pieceNames[piece % 16], x, y);
+                    }
+                }
+            }
+        }
+
+        // 检查棋子是否可以移动到目标位置
+        function canMovePiece(fromRow, fromCol, toRow, toCol) {
+            const piece = chessboard[fromRow][fromCol];
+            const targetPiece = chessboard[toRow][toCol];
+
+            // 不能吃自己的棋子
+            if ((piece <= 16 && targetPiece <= 16) || (piece > 16 && targetPiece > 16)) {
+                return false;
+            }
+
+            const pieceType = piece % 16;
+            switch (pieceType) {
+                case 1: // 車
+                    return canMoveRook(fromRow, fromCol, toRow, toCol);
+                case 2: // 馬
+                    return canMoveKnight(fromRow, fromCol, toRow, toCol);
+                case 3: // 相 / 象
+                    return canMoveBishop(fromRow, fromCol, toRow, toCol);
+                case 4: // 仕 / 士
+                    return canMoveAdvisor(fromRow, fromCol, toRow, toCol);
+                case 5: // 帥 / 將
+                    return canMoveKing(fromRow, fromCol, toRow, toCol);
+                case 6: // 炮
+                    return canMoveCannon(fromRow, fromCol, toRow, toCol);
+                case 7: // 兵 / 卒
+                    return canMovePawn(fromRow, fromCol, toRow, toCol);
+                default:
+                    return false;
+            }
+        }
+
+        // 車的移动规则
+        function canMoveRook(fromRow, fromCol, toRow, toCol) {
+            if (fromRow === toRow) {
+                const step = fromCol < toCol ? 1 : -1;
+                for (let col = fromCol + step; col !== toCol; col += step) {
+                    if (chessboard[fromRow][col] !== 0) {
+                        return false;
+                    }
+                }
+                return true;
+            } else if (fromCol === toCol) {
+                const step = fromRow < toRow ? 1 : -1;
+                for (let row = fromRow + step; row !== toRow; row += step) {
+                    if (chessboard[row][fromCol] !== 0) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        // 馬的移动规则
+        function canMoveKnight(fromRow, fromCol, toRow, toCol) {
+            const dx = Math.abs(toCol - fromCol);
+            const dy = Math.abs(toRow - fromRow);
+            if ((dx === 2 && dy === 1) || (dx === 1 && dy === 2)) {
+                if (dx === 2) {
+                    const blockCol = fromCol + (toCol - fromCol) / 2;
+                    if (chessboard[fromRow][blockCol] !== 0) {
+                        return false;
+                    }
+                } else {
+                    const blockRow = fromRow + (toRow - fromRow) / 2;
+                    if (chessboard[blockRow][fromCol] !== 0) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        // 相 / 象的移动规则
+        function canMoveBishop(fromRow, fromCol, toRow, toCol) {
+            const isRed = chessboard[fromRow][fromCol] <= 16;
+            if ((isRed && toRow >= 5) || (!isRed && toRow < 5)) {
+                return false;
+            }
+            const dx = Math.abs(toCol - fromCol);
+            const dy = Math.abs(toRow - fromRow);
+            if (dx === 2 && dy === 2) {
+                const blockRow = fromRow + (toRow - fromRow) / 2;
+                const blockCol = fromCol + (toCol - fromCol) / 2;
+                if (chessboard[blockRow][blockCol] !== 0) {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        // 仕 / 士的移动规则
+        function canMoveAdvisor(fromRow, fromCol, toRow, toCol) {
+            const isRed = chessboard[fromRow][fromCol] <= 16;
+            const palaceCols = [3, 4, 5];
+            const palaceRows = isRed ? [0, 1, 2] : [7, 8, 9];
+            if (!palaceCols.includes(toCol) || !palaceRows.includes(toRow)) {
+                return false;
+            }
+            const dx = Math.abs(toCol - fromCol);
+            const dy = Math.abs(toRow - fromRow);
+            return dx === 1 && dy === 1;
+        }
+
+        // 帥 / 將的移动规则
+        function canMoveKing(fromRow, fromCol, toRow, toCol) {
+            const isRed = chessboard[fromRow][fromCol] <= 16;
+            const palaceCols = [3, 4, 5];
+            const palaceRows = isRed ? [0, 1, 2] : [7, 8, 9];
+            if (!palaceCols.includes(toCol) || !palaceRows.includes(toRow)) {
+                return false;
+            }
+            const dx = Math.abs(toCol - fromCol);
+            const dy = Math.abs(toRow - fromRow);
+            return (dx === 1 && dy === 0) || (dx === 0 && dy === 1);
+        }
+
+        // 炮的移动规则
+        function canMoveCannon(fromRow, fromCol, toRow, toCol) {
+            if (fromRow === toRow) {
+                let count = 0;
+                const step = fromCol < toCol ? 1 : -1;
+                for (let col = fromCol + step; col !== toCol; col += step) {
+                    if (chessboard[fromRow][col] !== 0) {
+                        count++;
+                    }
+                }
+                if (chessboard[toRow][toCol] === 0) {
+                    return count === 0;
+                } else {
+                    return count === 1;
+                }
+            } else if (fromCol === toCol) {
+                let count = 0;
+                const step = fromRow < toRow ? 1 : -1;
+                for (let row = fromRow + step; row !== toRow; row += step) {
+                    if (chessboard[row][fromCol] !== 0) {
+                        count++;
+                    }
+                }
+                if (chessboard[toRow][toCol] === 0) {
+                    return count === 0;
+                } else {
+                    return count === 1;
+                }
+            }
+            return false;
+        }
+
+        // 兵 / 卒的移动规则
+        function canMovePawn(fromRow, fromCol, toRow, toCol) {
+            const isRed = chessboard[fromRow][fromCol] <= 16;
+            if (isRed) {
+                if (fromRow < 5) {
+                    return (toRow === fromRow + 1 && toCol === fromCol);
+                } else {
+                    return ((toRow === fromRow + 1 && toCol === fromCol) ||
+                        (toRow === fromRow && (toCol === fromCol + 1 || toCol === fromCol - 1)));
+                }
+            } else {
+                if (fromRow >= 5) {
+                    return (toRow === fromRow - 1 && toCol === fromCol);
+                } else {
+                    return ((toRow === fromRow - 1 && toCol === fromCol) ||
+                        (toRow === fromRow && (toCol === fromCol + 1 || toCol === fromCol - 1)));
+                }
+            }
+        }
+
+        // 移动棋子
+        function movePiece(fromRow, fromCol, toRow, toCol) {
+            if (canMovePiece(fromRow, fromCol, toRow, toCol)) {
+                chessboard[toRow][toCol] = chessboard[fromRow][fromCol];
+                chessboard[fromRow][fromCol] = 0;
+                currentPlayer = currentPlayer === 1 ? 2 : 1;
+                selectedPiece = null;
+                drawBoard();
+                drawPieces();
+            }
+        }
+
+        canvas.addEventListener('click', function (event) {
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            const col = Math.floor(x / squareSize);
+            const row = Math.floor(y / squareSize);
+            const piece = chessboard[row][col];
+
+            if (selectedPiece === null) {
+                if (piece > 0 && ((currentPlayer === 1 && piece <= 16) || (currentPlayer === 2 && piece > 16))) {
+                    selectedPiece = { row, col };
+                }
+            } else {
+                const { row: fromRow, col: fromCol } = selectedPiece;
+                movePiece(fromRow, fromCol, row, col);
+            }
+        });
+
+        drawBoard();
+        drawPieces();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>EasySwoole 服务器配置与启动指南</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 15px;
+            overflow-x: auto;
+            font-size: 16px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.4;
+            border-radius: 5px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .command-block {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>EasySwoole 服务器配置与启动指南</h1>
+
+<div class="command-block">
+    <h2>进入项目目录并调整权限</h2>
+    <pre>
+cd /var/www/html/easyswoole
+
+# 调整 Temp 目录的权限和所有权
+chown -R www-data:www-data Temp
+chmod -R 755 Temp
+
+# 清理残留的 PID 和套接字文件
+rm -f Temp/*.pid
+rm -f Temp/*.sock
+    </pre>
+</div>
+
+<div class="command-block">
+    <h2>设置 Composer 根包版本</h2>
+    <pre>
+# 编辑 composer.json 文件，添加或更新 "version" 字段
+nano composer.json
+
+composer dump-autoload
+    </pre>
+</div>
+
+<div class="command-block">
+    <h2>重新安装 EasySwoole</h2>
+    <pre>
+# 移除 vendor 文件夹和 composer.lock 文件
+rm -rf vendor composer.lock
+
+# 清理 Composer 缓存
+composer clear-cache
+
+# 安装依赖
+composer install
+
+# 安装 EasySwoole
+./vendor/bin/easyswoole install
+    </pre>
+</div>
+
+<div class="command-block">
+    <h2>尝试启动服务器</h2>
+    <pre>
+# 启动 EasySwoole 服务器
+./vendor/bin/easyswoole server start
+
+# 查看日志以获取更多信息
+tail -f Temp/log/*.log
+    </pre>
+</div>
+
+<div class="command-block">
+    <h2>Docker 操作</h2>
+    <pre>
+# 进入 Docker 容器进行交互式操作
+docker exec -it 1983ce463b1d /bin/bash
+
+# 停止并移除所有容器
+docker-compose down
+
+# 启动容器（后台运行）
+docker-compose up -d
+
+# 构建镜像并启动容器（后台运行）
+docker-compose up -d --build
+    </pre>
+</div>
+
+</body>
+</html>

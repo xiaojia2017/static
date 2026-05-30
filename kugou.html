@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>酷狗样式的简易音乐播放器</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .player {
+            text-align: center;
+            background-color: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 24px;
+        }
+        .song-title {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #555;
+        }
+        .controls {
+            margin-top: 20px;
+        }
+        button {
+            margin: 5px;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: #ff6a00;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #e66100;
+        }
+        .progress-container {
+            position: relative;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 5px;
+            background-color: #ddd;
+            border-radius: 2.5px;
+        }
+        .progress-filled {
+            height: 100%;
+            background-color: #ff6a00;
+            width: 0;
+            border-radius: 2.5px;
+        }
+        .time-display {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #777;
+        }
+        .lyrics-container {
+            margin-top: 20px;
+            height: 150px;
+            overflow-y: scroll;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            background-color: #fff;
+        }
+        .lyric-line {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #555;
+            transition: color 0.3s ease;
+        }
+        .active-lyric {
+            color: #ff6a00;
+            font-weight: bold;
+        }
+        .volume-control {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .volume-icon {
+            margin-right: 10px;
+            font-size: 20px;
+            color: #555;
+        }
+        input[type="range"] {
+            width: 100%;
+            accent-color: #ff6a00;
+        }
+        .song-list {
+            margin-top: 20px;
+        }
+        .song-list button {
+            display: block;
+            margin: 5px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: #eee;
+            color: #333;
+            transition: background-color 0.3s ease;
+        }
+        .song-list button:hover {
+            background-color: #ddd;
+        }
+
+        @media (max-width: 480px) {
+            .player {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            .song-title {
+                font-size: 16px;
+            }
+            button {
+                padding: 10px 18px;
+                font-size: 14px;
+            }
+            .time-display {
+                font-size: 12px;
+            }
+            .lyric-line {
+                font-size: 14px;
+            }
+            .volume-icon {
+                font-size: 18px;
+            }
+            .song-list button {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="player">
+        <h1>酷狗样式的简易音乐播放器</h1>
+        <div class="song-title" id="songTitle">歌曲 1</div>
+        <audio id="audioPlayer" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+        <div class="controls">
+            <button onclick="prevSong()">上一曲</button>
+            <button onclick="playPause()">播放/暂停</button>
+            <button onclick="nextSong()">下一曲</button>
+        </div>
+        <div class="progress-container" onclick="seek(event)">
+            <div class="progress-bar">
+                <div class="progress-filled"></div>
+            </div>
+        </div>
+        <div class="time-display" id="timeDisplay">0:00 / 0:00</div>
+        <div class="lyrics-container" id="lyricsContainer">
+            <!-- 歌词行 -->
+        </div>
+        <div class="volume-control">
+            <span class="volume-icon">&#128266;</span>
+            <input type="range" id="volumeControl" min="0" max="1" step="0.01" oninput="setVolume()">
+        </div>
+        <div class="song-list">
+            <button onclick="loadSong(0)">歌曲 1</button>
+            <button onclick="loadSong(1)">歌曲 2</button>
+            <button onclick="loadSong(2)">歌曲 3</button>
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('audioPlayer');
+        const volumeControl = document.getElementById('volumeControl');
+        const progressFilled = document.querySelector('.progress-filled');
+        const songTitle = document.getElementById('songTitle');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const lyricsContainer = document.getElementById('lyricsContainer');
+
+        let songs = [
+            { 
+                title: "歌曲 1", 
+                src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+                lyrics: [
+                    { time: 0, text: "欢迎来到酷狗播放器" },
+                    { time: 5, text: "这是一首示例歌曲" },
+                    { time: 10, text: "享受音乐的每一刻" },
+                    { time: 15, text: "让我们一起嗨起来" },
+                    { time: 20, text: "结束语" }
+                ]
+            },
+            { 
+                title: "歌曲 2", 
+                src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+                lyrics: [
+                    { time: 0, text: "这是第二首歌" },
+                    { time: 5, text: "继续享受音乐" },
+                    { time: 10, text: "更多歌曲等你来发现" },
+                    { time: 15, text: "感谢支持" },
+                    { time: 20, text: "再见" }
+                ]
+            },
+            { 
+                title: "歌曲 3", 
+                src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+                lyrics: [
+                    { time: 0, text: "第三首歌开始了" },
+                    { time: 5, text: "最后的旅程" },
+                    { time: 10, text: "希望你喜欢" },
+                    { time: 15, text: "下次再见" },
+                    { time: 20, text: "结束" }
+                ]
+            }
+        ];
+        let currentSongIndex = 0;
+
+        function loadSong(index) {
+            currentSongIndex = index;
+            audio.src = songs[index].src;
+            songTitle.textContent = songs[index].title;
+            audio.load();
+            playPause();
+            updateLyrics(songs[index].lyrics);
+        }
+
+        function playPause() {
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+
+        function setVolume() {
+            audio.volume = volumeControl.value;
+        }
+
+        function updateProgress() {
+            const percent = (audio.currentTime / audio.duration) * 100;
+            progressFilled.style.width = `${percent}%`;
+            updateTimeDisplay();
+            highlightCurrentLyric();
+        }
+
+        function seek(e) {
+            const width = this.clientWidth;
+            const clickX = e.offsetX;
+            const duration = audio.duration;
+
+            audio.currentTime = (clickX / width) * duration;
+        }
+
+        function nextSong() {
+            currentSongIndex = (currentSongIndex + 1) % songs.length;
+            loadSong(currentSongIndex);
+        }
+
+        function prevSong() {
+            currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+            loadSong(currentSongIndex);
+        }
+
+        function formatTime(time) {
+            const minutes = Math.floor(time / 60);
+            const seconds = Math.floor(time % 60).toString().padStart(2, '0');
+            return `${minutes}:${seconds}`;
+        }
+
+        function updateTimeDisplay() {
+            const currentTime = formatTime(audio.currentTime);
+            const duration = formatTime(audio.duration);
+            timeDisplay.textContent = `${currentTime} / ${duration}`;
+        }
+
+        function updateLyrics(lyrics) {
+            lyricsContainer.innerHTML = '';
+            lyrics.forEach((line, index) => {
+                const lyricLine = document.createElement('div');
+                lyricLine.className = 'lyric-line';
+                lyricLine.dataset.time = line.time;
+                lyricLine.textContent = line.text;
+                lyricsContainer.appendChild(lyricLine);
+            });
+        }
+
+        function highlightCurrentLyric() {
+            const lines = lyricsContainer.querySelectorAll('.lyric-line');
+            lines.forEach(line => {
+                const time = parseFloat(line.dataset.time);
+                if (audio.currentTime >= time && audio.currentTime < time + 5) {
+                    line.classList.add('active-lyric');
+                } else {
+                    line.classList.remove('active-lyric');
+                }
+            });
+
+            // Scroll to active lyric
+            const activeLyric = lyricsContainer.querySelector('.active-lyric');
+            if (activeLyric) {
+                activeLyric.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        audio.addEventListener('timeupdate', updateProgress);
+        audio.addEventListener('loadedmetadata', () => {
+            updateTimeDisplay(); // Update time display when metadata is loaded
+        });
+        loadSong(currentSongIndex); // Load the first song initially
+    </script>
+</body>
+</html>
+
+
+
