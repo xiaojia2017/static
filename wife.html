@@ -104,6 +104,37 @@
             transform: translateY(1px);
         }
 
+        /* 音乐控制按钮（右上角） */
+        .music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 154, 158, 0.5);
+            color: #ff9a9e;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .music-control.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .music-control:hover {
+            background: rgba(255, 154, 158, 0.3);
+            transform: scale(1.1);
+        }
+
         /* 弹窗 (模态框) */
         .modal-overlay {
             position: fixed;
@@ -163,6 +194,14 @@
     <!-- 星空背景 -->
     <canvas id="starCanvas"></canvas>
 
+    <!-- 背景音乐 (请将 music.mp3 替换为你喜欢的音乐文件) -->
+    <audio id="bgMusic" src="zhixinairen.mp3" loop preload="auto"></audio>
+
+    <!-- 右上角音乐控制按钮 -->
+    <div class="music-control" :class="{ 'show': isMusicPlaying }" @click="toggleMusic">
+        {{ isMusicPlaying ? '🎵' : '🔇' }}
+    </div>
+
     <!-- Vue 挂载点 -->
     <div id="app" class="container">
         <!-- 标题 -->
@@ -176,8 +215,8 @@
             </div>
         </div>
 
-        <!-- 惊喜按钮 -->
-        <button class="btn" @click="showSurprise = true">
+        <!-- 惊喜按钮：点击后同时触发音乐和烟花，并显示弹窗 -->
+        <button class="btn" @click="openSurprise">
             💖 点击查收惊喜
         </button>
 
@@ -187,8 +226,8 @@
                 <div class="heart-icon">❤️</div>
                 <h2>致我最爱的老婆</h2>
                 <p>{{ surpriseMessage }}</p>
-                <!-- 关键：点击这个按钮触发烟花并关闭弹窗 -->
-                <button class="btn" @click="closeAndCelebrate">我也爱你</button>
+                <!-- “我也爱你”按钮：仅关闭弹窗 -->
+                <button class="btn" @click="showSurprise = false">我也爱你</button>
             </div>
         </div>
     </div>
@@ -208,12 +247,14 @@
 
                 // 3. 弹窗控制
                 const showSurprise = ref(false);
-                const surpriseMessage = ref('老婆，辛苦啦！\n这个网页是我专门为你写的，不求事事圆满，只求岁岁相伴，\n一家人平安、健康，心里永远有奔头，\n踏踏实实把每一天过好。\n今天想对你说：\n我爱你，胜过世间万物。');
+                const surpriseMessage = ref('老婆，辛苦啦！\n这个网页是我专门为你写的，\n不求事事圆满，只求岁岁相伴，\n踏踏实实把每一天过好。\n愿咱们一家人，不求一世无风雨，\n但无论顺逆，心中常有盼头，\n身边彼此依靠，好好相守，稳步前行。\n永远相信明天会更好！');
 
-                // 用来存储烟花定时器的变量（为了在页面销毁时停止烟花）
+                // 4. 音乐控制相关
+                const isMusicPlaying = ref(false);
+                // 用来存储烟花定时器
                 let fireworksInterval = null;
 
-                // 4. 打字机逻辑
+                // 5. 打字机逻辑
                 const startTyping = () => {
                     let i = 0;
                     const timer = setInterval(() => {
@@ -227,7 +268,7 @@
                     }, 120);
                 };
 
-                // 5. 星空背景逻辑 (Canvas API)
+                // 6. 星空背景逻辑
                 const initStars = () => {
                     const canvas = document.getElementById('starCanvas');
                     const ctx = canvas.getContext('2d');
@@ -268,68 +309,89 @@
                     draw();
                 };
 
-                // 6. 点击“我也爱你”后触发持续不断的烟花特效
-                const closeAndCelebrate = () => {
-                    // 第一步：关闭弹窗
-                    showSurprise.value = false;
+                // 7. 烟花播放逻辑（抽离成独立函数，供点击按钮时调用）
+                const startFireworks = () => {
+                    if (fireworksInterval) return; // 防止重复启动
 
-                    // 第二步：延迟 100ms 后启动烟花（避免与弹窗动画冲突）
-                    setTimeout(() => {
-                        // 防止重复点击导致定时器叠加
-                        if (fireworksInterval) return;
+                    const defaults = { 
+                        startVelocity: 30, 
+                        spread: 360, 
+                        ticks: 80, 
+                        zIndex: 100 
+                    };
 
-                        // 默认烟花配置
-                        const defaults = { 
-                            startVelocity: 30, 
-                            spread: 360, 
-                            ticks: 80, 
-                            zIndex: 100 
-                        };
+                    function randomInRange(min, max) {
+                        return Math.random() * (max - min) + min;
+                    }
 
-                        // 随机生成爆炸位置和颜色
-                        function randomInRange(min, max) {
-                            return Math.random() * (max - min) + min;
+                    fireworksInterval = setInterval(function() {
+                        const particleCount = randomInRange(30, 80);
+
+                        // 左侧烟花
+                        confetti(Object.assign({}, defaults, { 
+                            particleCount,
+                            origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+                        }));
+                        
+                        // 右侧烟花
+                        confetti(Object.assign({}, defaults, { 
+                            particleCount,
+                            origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+                        }));
+
+                        // 中间偶尔大烟花
+                        if (Math.random() > 0.5) {
+                            confetti(Object.assign({}, defaults, { 
+                                particleCount: particleCount * 1.5,
+                                spread: 120,
+                                origin: { x: randomInRange(0.3, 0.7), y: 0.5 },
+                                colors: ['#ff6b6b', '#ff9a9e', '#fecfef', '#ffffff']
+                            }));
                         }
 
-                        // 【核心修改】一直运行的烟花循环
-                        fireworksInterval = setInterval(function() {
-                            // 每次随机生成粒子数量，让烟花有大小之分
-                            const particleCount = randomInRange(30, 80);
-
-                            // 烟花 1：从左侧发射
-                            confetti(Object.assign({}, defaults, { 
-                                particleCount,
-                                origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
-                            }));
-                            
-                            // 烟花 2：从右侧发射
-                            confetti(Object.assign({}, defaults, { 
-                                particleCount,
-                                origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
-                            }));
-
-                            // 烟花 3：中心上方绽放（偶尔出现的大烟花）
-                            if (Math.random() > 0.5) {
-                                confetti(Object.assign({}, defaults, { 
-                                    particleCount: particleCount * 1.5,
-                                    spread: 120,
-                                    origin: { x: randomInRange(0.3, 0.7), y: 0.5 },
-                                    colors: ['#ff6b6b', '#ff9a9e', '#fecfef', '#ffffff']
-                                }));
-                            }
-
-                        }, 400); // 每 400 毫秒发射一次，比之前密集，形成连绵不绝的效果
-
-                    }, 100);
+                    }, 400);
                 };
 
-                // 7. 生命周期钩子
+                // 8. 核心：点击第一个按钮，同时开启音乐和烟花，并弹出窗口
+                const openSurprise = () => {
+                    // 第一步：显示弹窗
+                    showSurprise.value = true;
+
+                    // 第二步：播放音乐
+                    const audio = document.getElementById('bgMusic');
+                    if (audio) {
+                        audio.play().then(() => {
+                            isMusicPlaying.value = true;
+                        }).catch(error => {
+                            console.log("音乐播放失败（可能缺少 music.mp3 文件或浏览器拦截）:", error);
+                            isMusicPlaying.value = false;
+                        });
+                    }
+
+                    // 第三步：启动烟花
+                    startFireworks();
+                };
+
+                // 9. 音乐开关（右上角）
+                const toggleMusic = () => {
+                    const audio = document.getElementById('bgMusic');
+                    if (audio) {
+                        if (isMusicPlaying.value) {
+                            audio.pause();
+                            isMusicPlaying.value = false;
+                        } else {
+                            audio.play();
+                            isMusicPlaying.value = true;
+                        }
+                    }
+                };
+
+                // 10. 生命周期钩子
                 onMounted(() => {
                     initStars();
                     startTyping();
                 });
 
-                // 新增：页面关闭或切换时，清理定时器，防止内存泄漏
                 onUnmounted(() => {
                     if (fireworksInterval) {
                         clearInterval(fireworksInterval);
@@ -342,7 +404,9 @@
                     isTyping,
                     showSurprise,
                     surpriseMessage,
-                    closeAndCelebrate
+                    isMusicPlaying,
+                    openSurprise,
+                    toggleMusic
                 };
             }
         }).mount('#app');
