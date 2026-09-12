@@ -18,7 +18,7 @@
         body {
             font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
             background-color: #0b0b1a;
-            overflow: hidden; /* 防止出现滚动条 */
+            overflow: hidden;
             color: #fff;
         }
 
@@ -215,18 +215,17 @@
             </div>
         </div>
 
-        <!-- 惊喜按钮：点击后同时触发音乐和烟花，并显示弹窗 -->
+        <!-- 惊喜按钮 -->
         <button class="btn" @click="openSurprise">
             💖 点击查收惊喜
         </button>
 
-        <!-- 弹窗 (点击按钮后出现) -->
+        <!-- 弹窗 -->
         <div class="modal-overlay" v-if="showSurprise" @click.self="showSurprise = false">
             <div class="modal-content">
                 <div class="heart-icon">❤️</div>
                 <h2>致我最爱的老婆</h2>
                 <p>{{ surpriseMessage }}</p>
-                <!-- “我也爱你”按钮：仅关闭弹窗 -->
                 <button class="btn" @click="showSurprise = false">我也爱你</button>
             </div>
         </div>
@@ -251,7 +250,6 @@
 
                 // 4. 音乐控制相关
                 const isMusicPlaying = ref(false);
-                // 用来存储烟花定时器
                 let fireworksInterval = null;
 
                 // 5. 打字机逻辑
@@ -309,9 +307,9 @@
                     draw();
                 };
 
-                // 7. 烟花播放逻辑（抽离成独立函数，供点击按钮时调用）
+                // 7. 烟花播放逻辑
                 const startFireworks = () => {
-                    if (fireworksInterval) return; // 防止重复启动
+                    if (fireworksInterval) return;
 
                     const defaults = { 
                         startVelocity: 30, 
@@ -327,19 +325,16 @@
                     fireworksInterval = setInterval(function() {
                         const particleCount = randomInRange(30, 80);
 
-                        // 左侧烟花
                         confetti(Object.assign({}, defaults, { 
                             particleCount,
                             origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
                         }));
                         
-                        // 右侧烟花
                         confetti(Object.assign({}, defaults, { 
                             particleCount,
                             origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
                         }));
 
-                        // 中间偶尔大烟花
                         if (Math.random() > 0.5) {
                             confetti(Object.assign({}, defaults, { 
                                 particleCount: particleCount * 1.5,
@@ -352,41 +347,54 @@
                     }, 400);
                 };
 
-                // 8. 核心：点击第一个按钮，同时开启音乐和烟花，并弹出窗口
-                const openSurprise = () => {
-                    // 第一步：显示弹窗
-                    showSurprise.value = true;
-
-                    // 第二步：播放音乐
+                // 8. 【核心修改】播放音乐（带指定起点）
+                const playMusic = (startTime = 0) => {
                     const audio = document.getElementById('bgMusic');
-                    if (audio) {
-                        audio.play().then(() => {
-                            isMusicPlaying.value = true;
-                        }).catch(error => {
-                            console.log("音乐播放失败（可能缺少 music.mp3 文件或浏览器拦截）:", error);
-                            isMusicPlaying.value = false;
-                        });
+                    if (!audio) return;
+
+                    // 设置音乐的起始播放时间（单位：秒）
+                    // 注意：为了用户体验，这里加了个保护，如果音频还没加载出足够数据，可能会报错，我们用 try-catch 兜底
+                    try {
+                        audio.currentTime = startTime; 
+                    } catch (e) {
+                        console.log("设置播放起点失败，可能音频尚未加载完成:", e);
                     }
 
-                    // 第三步：启动烟花
+                    audio.play().then(() => {
+                        isMusicPlaying.value = true;
+                    }).catch(error => {
+                        console.log("音乐播放失败（可能缺少 music.mp3 文件或浏览器拦截）:", error);
+                        isMusicPlaying.value = false;
+                    });
+                };
+
+                // 9. 点击“点击查收惊喜”：从第 10 秒开始放音乐 + 放烟花 + 弹窗
+                const openSurprise = () => {
+                    showSurprise.value = true;
+                    // 【关键点】调用播放函数，传入 10，代表从 10 秒开始
+                    playMusic(10); 
                     startFireworks();
                 };
 
-                // 9. 音乐开关（右上角）
+                // 10. 音乐开关（右上角）
+                // 如果音乐已经播放，则暂停/继续；如果从未播放，则从头开始（或从0秒）
                 const toggleMusic = () => {
                     const audio = document.getElementById('bgMusic');
-                    if (audio) {
-                        if (isMusicPlaying.value) {
-                            audio.pause();
-                            isMusicPlaying.value = false;
-                        } else {
-                            audio.play();
+                    if (!audio) return;
+
+                    if (isMusicPlaying.value) {
+                        audio.pause();
+                        isMusicPlaying.value = false;
+                    } else {
+                        // 如果当前进度为0（说明没播过），就正常播
+                        // 如果是从暂停恢复，currentTime 会保留在暂停的位置，直接 play 即可
+                        audio.play().then(() => {
                             isMusicPlaying.value = true;
-                        }
+                        }).catch(e => console.log(e));
                     }
                 };
 
-                // 10. 生命周期钩子
+                // 11. 生命周期钩子
                 onMounted(() => {
                     initStars();
                     startTyping();
